@@ -1,0 +1,239 @@
+"use client";
+
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Shield, Clock, Star } from "lucide-react";
+import { useFinancialServices } from "../hooks/useFinancialServices";
+import { SearchHeader } from "./ui/SearchHeader";
+import { FilterSidebar } from "./ui/FilterSidebar";
+import { FilterChips } from "./ui/FilterChips";
+import { ServiceCard } from "./ui/ServiceCard";
+import { Pagination } from "./ui/Pagination";
+import { LoadingSpinner, EmptyState } from "./ui/LoadingState";
+
+export const FinancialMarketplace: React.FC = () => {
+  const {
+    // Data
+    currentServices,
+    filteredServices,
+    facets,
+
+    // State
+    loading,
+    error,
+    searchFilters,
+    filterStates,
+    pagination,
+
+    // Actions
+    setSearchQuery,
+    setSelectedIndustry,
+    setSelectedPricing,
+    setShowNewOnly,
+    handleFilterChange,
+    clearFilters,
+    setCurrentPage,
+  } = useFinancialServices();
+
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const handleRemoveFilter = (type: string, value?: string) => {
+    switch (type) {
+      case "search":
+        setSearchQuery("");
+        break;
+      case "category":
+        if (value) {
+          handleFilterChange("category", value, false);
+        }
+        break;
+      case "industry":
+        setSelectedIndustry("all");
+        break;
+      case "pricing":
+        setSelectedPricing("all");
+        break;
+      case "newOnly":
+        setShowNewOnly(false);
+        break;
+      default:
+        // Handle facet-based filters
+        if (value) {
+          handleFilterChange(type, value, false);
+        }
+        break;
+    }
+  };
+
+  const hasActiveFilters = Boolean(
+    searchFilters.searchQuery ||
+      searchFilters.selectedIndustry !== "all" ||
+      searchFilters.selectedPricing !== "all" ||
+      searchFilters.showNewOnly ||
+      Object.values(filterStates.category || {}).some(Boolean) ||
+      Object.values(filterStates).some(
+        (state) =>
+          typeof state === "object" &&
+          state !== null &&
+          Object.values(state).some(Boolean)
+      )
+  );
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center py-12">
+          <div className="max-w-md mx-auto">
+            <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Shield className="h-12 w-12 text-red-500" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2 text-red-600">
+              Error Loading Services
+            </h3>
+            <p className="text-muted-foreground mb-6">{error}</p>
+            <Button onClick={() => window.location.reload()}>Try Again</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-transparent via-blue-100/60 to-transparent dark:from-transparent dark:via-blue-900/30 dark:to-blue-950">
+      <div className="container mx-auto px-4 pt-24 pb-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-2xl font-semibold text-foreground mb-1">
+                Financial Services Marketplace
+              </h1>
+              <p className="text-sm text-muted-foreground mb-2">
+                Access funding solutions for UAE entrepreneurs and SMEs
+              </p>
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <span>{filteredServices.length} services</span>
+                <span>•</span>
+                <div className="flex items-center gap-1">
+                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                  <span>4.8 rating</span>
+                </div>
+                <span>•</span>
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  <span>7 days avg. processing</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Search and Filters */}
+        <div className="mb-8 space-y-4">
+          <SearchHeader
+            searchQuery={searchFilters.searchQuery}
+            onSearchChange={setSearchQuery}
+            onViewModeChange={setViewMode}
+            viewMode={viewMode}
+            onShowFilters={() => setShowFilters(!showFilters)}
+            showFilters={showFilters}
+          />
+
+          {/* Active Filter Chips */}
+          <FilterChips
+            searchFilters={searchFilters}
+            filterStates={filterStates}
+            onRemoveFilter={handleRemoveFilter}
+            onClearAll={clearFilters}
+          />
+        </div>
+
+        <div className="flex gap-8">
+          {/* Sidebar */}
+          <div className="w-80 flex-shrink-0">
+            <div
+              className={`${
+                showFilters ? "block" : "hidden lg:block"
+              } transition-all duration-300`}
+            >
+              <div className="sticky top-16">
+                <FilterSidebar
+                  facets={facets}
+                  filterStates={filterStates}
+                  onFilterChange={handleFilterChange}
+                  onClearFilters={clearFilters}
+                  hasActiveFilters={hasActiveFilters}
+                  totalItems={pagination.totalItems}
+                  filteredItems={filteredServices.length}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 min-w-0">
+            {/* Results Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  {filteredServices.length} services found
+                  {hasActiveFilters && " (filtered)"}
+                </p>
+              </div>
+
+              {hasActiveFilters && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="text-primary border-primary/20 hover:bg-primary/5"
+                >
+                  Clear Filters
+                </Button>
+              )}
+            </div>
+
+            {/* Services Grid/List */}
+            {loading ? (
+              <LoadingSpinner />
+            ) : currentServices.length === 0 ? (
+              <EmptyState
+                title="No services found"
+                description="Try adjusting your search criteria or filters to find what you're looking for."
+                onClearFilters={hasActiveFilters ? clearFilters : undefined}
+              />
+            ) : (
+              <>
+                <div
+                  className={
+                    viewMode === "grid"
+                      ? "grid grid-cols-1 md:grid-cols-2 gap-6"
+                      : "space-y-4"
+                  }
+                >
+                  {currentServices.map((service) => (
+                    <ServiceCard
+                      key={service.id}
+                      service={service}
+                      viewMode={viewMode}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                <Pagination
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FinancialMarketplace;

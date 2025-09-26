@@ -1,0 +1,363 @@
+# GraphQL Schema for Khalifa Fund Application
+
+scalar DateTime
+scalar Upload
+
+# User Types
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  role: UserRole!
+  isVerified: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  firmProfile: FirmProfile
+}
+
+enum UserRole {
+  ENTREPRENEUR
+  ADMIN
+  REVIEWER
+  SUPPORT
+}
+
+# Firm Profile
+type FirmProfile {
+  id: ID!
+  tradeName: String!
+  legalName: String!
+  tradeNumber: String!
+  licenseNumber: String!
+  businessType: BusinessType!
+  industry: Industry!
+  establishmentDate: DateTime!
+  address: Address!
+  contactInfo: ContactInfo!
+  numberOfEmployees: Int!
+  annualRevenue: Float
+  website: String
+  description: String
+  isActive: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+}
+
+enum BusinessType {
+  SOLE_PROPRIETORSHIP
+  PARTNERSHIP
+  LLC
+  CORPORATION
+  NON_PROFIT
+}
+
+enum Industry {
+  TECHNOLOGY
+  HEALTHCARE
+  EDUCATION
+  FINANCE
+  RETAIL
+  MANUFACTURING
+  SERVICES
+  AGRICULTURE
+  TOURISM
+  OTHER
+}
+
+type Address {
+  street: String!
+  city: String!
+  state: String!
+  country: String!
+  postalCode: String!
+}
+
+type ContactInfo {
+  email: String!
+  phone: String!
+  mobile: String
+  fax: String
+}
+
+# Reporting Obligations
+type ReportingObligation {
+  id: ID!
+  title: String!
+  description: String!
+  dueDate: DateTime!
+  status: ObligationStatus!
+  priority: ObligationPriority!
+  category: ObligationCategory!
+  firmId: ID!
+  firm: FirmProfile!
+  documents: [ObligationDocument!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  completedAt: DateTime
+}
+
+enum ObligationStatus {
+  PENDING
+  IN_PROGRESS
+  SUBMITTED
+  APPROVED
+  REJECTED
+  OVERDUE
+}
+
+enum ObligationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ObligationCategory {
+  FINANCIAL_REPORTING
+  COMPLIANCE
+  REGULATORY
+  ANNUAL_RETURN
+  QUARTERLY_REPORT
+}
+
+type ObligationDocument {
+  id: ID!
+  name: String!
+  type: String!
+  size: Int!
+  uploadedAt: DateTime!
+  url: String!
+  isRequired: Boolean!
+}
+
+# Applications
+type Application {
+  id: ID!
+  title: String!
+  type: ApplicationType!
+  status: ApplicationStatus!
+  firmId: ID!
+  firm: FirmProfile!
+  submittedAt: DateTime
+  reviewedAt: DateTime
+  approvedAt: DateTime
+  rejectedAt: DateTime
+  comments: [ApplicationComment!]!
+  documents: [ApplicationDocument!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum ApplicationType {
+  FUNDING_REQUEST
+  LOAN_APPLICATION
+  GRANT_APPLICATION
+  BUSINESS_SUPPORT
+  TRAINING_PROGRAM
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  ADDITIONAL_INFO_REQUIRED
+  APPROVED
+  REJECTED
+  WITHDRAWN
+}
+
+type ApplicationComment {
+  id: ID!
+  content: String!
+  author: User!
+  createdAt: DateTime!
+}
+
+type ApplicationDocument {
+  id: ID!
+  name: String!
+  type: String!
+  size: Int!
+  uploadedAt: DateTime!
+  url: String!
+  isRequired: Boolean!
+}
+
+# Marketplace
+type ServiceProvider {
+  id: ID!
+  name: String!
+  category: ServiceCategory!
+  description: String!
+  contactInfo: ContactInfo!
+  rating: Float!
+  reviewCount: Int!
+  isActive: Boolean!
+  services: [Service!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum ServiceCategory {
+  FINANCIAL_SERVICES
+  LEGAL_SERVICES
+  CONSULTING
+  MARKETING
+  TECHNOLOGY
+  TRAINING
+  OTHER
+}
+
+type Service {
+  id: ID!
+  name: String!
+  description: String!
+  price: Float
+  duration: String
+  provider: ServiceProvider!
+  isActive: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+# Input Types
+input RegisterInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input CreateFirmProfileInput {
+  tradeName: String!
+  legalName: String!
+  tradeNumber: String!
+  licenseNumber: String!
+  businessType: BusinessType!
+  industry: Industry!
+  establishmentDate: DateTime!
+  address: AddressInput!
+  contactInfo: ContactInfoInput!
+  numberOfEmployees: Int!
+  annualRevenue: Float
+  website: String
+  description: String
+}
+
+input AddressInput {
+  street: String!
+  city: String!
+  state: String!
+  country: String!
+  postalCode: String!
+}
+
+input ContactInfoInput {
+  email: String!
+  phone: String!
+  mobile: String
+  fax: String
+}
+
+input ObligationFilters {
+  status: [ObligationStatus!]
+  priority: [ObligationPriority!]
+  category: [ObligationCategory!]
+  dueDateFrom: DateTime
+  dueDateTo: DateTime
+  search: String
+}
+
+# Pagination
+input PaginationInput {
+  page: Int = 1
+  limit: Int = 10
+}
+
+type PaginationInfo {
+  page: Int!
+  limit: Int!
+  total: Int!
+  totalPages: Int!
+  hasNext: Boolean!
+  hasPrev: Boolean!
+}
+
+# Response Types
+type AuthResponse {
+  user: User!
+  accessToken: String!
+  refreshToken: String!
+}
+
+type ReportingObligationsResponse {
+  data: [ReportingObligation!]!
+  pagination: PaginationInfo!
+}
+
+# Queries
+type Query {
+  # Auth
+  me: User
+
+  # Firm Profile
+  firmProfile: FirmProfile
+
+  # Reporting Obligations
+  reportingObligations(
+    filters: ObligationFilters
+    pagination: PaginationInput
+  ): ReportingObligationsResponse!
+
+  reportingObligation(id: ID!): ReportingObligation
+
+  # Applications
+  applications(pagination: PaginationInput): [Application!]!
+  application(id: ID!): Application
+
+  # Marketplace
+  serviceProviders(
+    category: ServiceCategory
+    pagination: PaginationInput
+  ): [ServiceProvider!]!
+
+  serviceProvider(id: ID!): ServiceProvider
+}
+
+# Mutations
+type Mutation {
+  # Authentication
+  register(input: RegisterInput!): AuthResponse!
+  login(input: LoginInput!): AuthResponse!
+  logout: Boolean!
+  refreshToken: AuthResponse!
+
+  # Firm Profile
+  createFirmProfile(input: CreateFirmProfileInput!): FirmProfile!
+  updateFirmProfile(id: ID!, input: CreateFirmProfileInput!): FirmProfile!
+
+  # Reporting Obligations
+  updateObligationStatus(
+    id: ID!
+    status: ObligationStatus!
+  ): ReportingObligation!
+
+  # File Upload
+  uploadFile(file: Upload!): String!
+}
+
+# Subscriptions
+type Subscription {
+  # Real-time updates for obligations
+  obligationUpdated(firmId: ID!): ReportingObligation!
+
+  # Application status updates
+  applicationStatusChanged(firmId: ID!): Application!
+}
