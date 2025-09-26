@@ -228,17 +228,17 @@ export function MainNav() {
                           <NavigationMenuLink key={item.id} asChild>
                             <Link
                               href={item.href}
-                              className="group relative flex flex-col p-4 rounded-xl border border-gray-200 hover:border-primary/30 hover:shadow-md focus:shadow-md focus:outline-none transition-all duration-200 bg-white hover:bg-gradient-to-br hover:from-primary/5 hover:to-blue-50/30"
+                              className="group relative flex flex-col p-4 rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg focus:shadow-lg focus:outline-none transition-all duration-200 bg-white hover:bg-gray-50"
                             >
                               <div className="flex items-center mb-2">
-                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center group-hover:from-primary/20 group-hover:to-primary/30 transition-all duration-200">
+                                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-all duration-200">
                                   <item.icon
                                     size={16}
                                     className="text-primary"
                                   />
                                 </div>
                                 <div className="ml-3 flex-1">
-                                  <p className="text-sm font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                                  <p className="text-sm font-semibold text-gray-900 group-hover:text-gray-700 transition-colors">
                                     {item.name}
                                   </p>
                                 </div>
