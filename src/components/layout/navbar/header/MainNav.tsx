@@ -26,7 +26,6 @@ import {
   TrendingUp,
   Calendar,
   Sparkles,
-  Menu,
   Sun,
   Moon,
 } from "lucide-react";
@@ -271,20 +270,6 @@ export function MainNav() {
 
           {/* Contact & Auth */}
           <div className="flex items-center space-x-4">
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden h-9 w-9 transition-all rounded-full text-white hover:text-white hover:bg-white/20"
-              onClick={() => {
-                // This will be handled by the MobileNav component
-                const event = new CustomEvent("toggleMobileMenu");
-                window.dispatchEvent(event);
-              }}
-            >
-              <Menu className="h-4 w-4" />
-              <span className="sr-only">Open menu</span>
-            </Button>
             {/* Theme Toggle */}
             <Button
               variant="ghost"

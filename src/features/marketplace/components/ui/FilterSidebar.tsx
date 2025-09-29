@@ -58,9 +58,9 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 lg:space-y-4">
       {/* Results Summary */}
-      <Card className="border-0 shadow-sm bg-primary/20">
+      <Card className="border-0 shadow-sm bg-primary/20 lg:bg-primary/10">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2 text-foreground">
             <TrendingUp className="h-4 w-4 text-primary" />

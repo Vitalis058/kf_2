@@ -101,7 +101,7 @@ export const FinancialMarketplace: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-transparent via-blue-100/60 to-transparent dark:from-transparent dark:via-blue-900/30 dark:to-blue-950">
-      <div className="container mx-auto px-4 pt-24 pb-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-8">
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center justify-center">
@@ -149,15 +149,15 @@ export const FinancialMarketplace: React.FC = () => {
           />
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           {/* Sidebar */}
-          <div className="w-80 flex-shrink-0">
+          <div className="w-full lg:w-80 flex-shrink-0">
             <div
               className={`${
                 showFilters ? "block" : "hidden lg:block"
               } transition-all duration-300`}
             >
-              <div className="sticky top-16">
+              <div className="lg:sticky lg:top-16">
                 <FilterSidebar
                   facets={facets}
                   filterStates={filterStates}
@@ -208,7 +208,7 @@ export const FinancialMarketplace: React.FC = () => {
                 <div
                   className={
                     viewMode === "grid"
-                      ? "grid grid-cols-1 md:grid-cols-2 gap-6"
+                      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"
                       : "space-y-4"
                   }
                 >

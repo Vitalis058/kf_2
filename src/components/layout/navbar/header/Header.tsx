@@ -25,8 +25,12 @@ export default function Header({ className }: HeaderProps) {
 
   return (
     <header className={`w-full transition-all duration-300 ${className || ""}`}>
-      <MainNav />
-      <MobileNav />
+      <div className="hidden lg:block">
+        <MainNav />
+      </div>
+      <div className="block lg:hidden">
+        <MobileNav />
+      </div>
     </header>
   );
 }
