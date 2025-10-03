@@ -11,10 +11,10 @@ export interface User {
 }
 
 export enum UserRole {
-  ENTREPRENEUR = 'ENTREPRENEUR',
-  ADMIN = 'ADMIN',
-  REVIEWER = 'REVIEWER',
-  SUPPORT = 'SUPPORT'
+  ENTREPRENEUR = "ENTREPRENEUR",
+  ADMIN = "ADMIN",
+  REVIEWER = "REVIEWER",
+  SUPPORT = "SUPPORT",
 }
 
 export interface AuthState {

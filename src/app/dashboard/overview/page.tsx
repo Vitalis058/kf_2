@@ -81,11 +81,14 @@ const StatCard: React.FC<{
   subtitle: string;
   color?: string;
 }> = ({ title, value, subtitle, color = "hsl(var(--foreground))" }) => (
-  <div className="bg-background border border-border rounded-lg p-6 text-center h-24 flex flex-col justify-center">
-    <div className="text-2xl font-bold mb-2" style={{ color }}>
+  <div className="bg-background border border-border rounded-lg p-4 md:p-6 text-center h-20 md:h-24 flex flex-col justify-center">
+    <div
+      className="text-xl md:text-2xl font-bold mb-1 md:mb-2"
+      style={{ color }}
+    >
       {value}
     </div>
-    <div className="text-sm font-medium text-muted-foreground mb-1">
+    <div className="text-xs md:text-sm font-medium text-muted-foreground mb-1">
       {title}
     </div>
     <div className="text-xs text-muted-foreground">{subtitle}</div>
@@ -116,29 +119,32 @@ const CompanyInfoCard: React.FC<{
 }) => (
   <Card className="hover:shadow-md transition-all duration-200">
     <CardHeader className="pb-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center space-x-3">
-          <div className="p-3 bg-primary/10 rounded-lg">
-            <Building2 className="h-6 w-6 text-primary" />
+          <div className="p-2 md:p-3 bg-primary/10 rounded-lg">
+            <Building2 className="h-5 w-5 md:h-6 md:w-6 text-primary" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">
               {companyName}
             </h2>
-            <p className="text-muted-foreground">{licenseNumber}</p>
+            <p className="text-sm md:text-base text-muted-foreground">
+              {licenseNumber}
+            </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <Badge
             variant="outline"
-            className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+            className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800 text-xs md:text-sm"
           >
             Active License
           </Badge>
           <Button
             variant="ghost"
             onClick={onViewProfile}
-            className="text-primary hover:bg-primary/10"
+            className="text-primary hover:bg-primary/10 text-sm md:text-base"
+            size="sm"
           >
             View Profile
           </Button>
@@ -147,7 +153,7 @@ const CompanyInfoCard: React.FC<{
     </CardHeader>
     <CardContent className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
         <StatCard
           title="Reporting Obligations"
           value={reportingObligations}
@@ -169,7 +175,7 @@ const CompanyInfoCard: React.FC<{
       </div>
 
       {/* License Information */}
-      <div className="grid grid-cols-2 gap-6 pt-4 border-t border-border">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 pt-4 border-t border-border">
         <div>
           <div className="text-xs text-muted-foreground mb-1">License Type</div>
           <div className="text-sm font-medium text-foreground">
@@ -423,19 +429,19 @@ const ReportingObligationsCard: React.FC<{
       {obligations.map((obligation) => (
         <div
           key={obligation.id}
-          className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors group"
+          className="flex items-start justify-between p-4 border border-border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors group"
           onClick={() => onObligationClick?.(obligation.id)}
         >
-          <div className="flex-1">
-            <div className="flex items-center space-x-3 mb-2">
-              <span className="text-sm font-medium text-foreground">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+              <span className="text-sm font-medium text-foreground truncate">
                 {obligation.title}
               </span>
               <Badge
                 variant={
                   obligation.status === "Submitted" ? "default" : "destructive"
                 }
-                className="text-xs"
+                className="text-xs w-fit"
               >
                 {obligation.status}
               </Badge>
@@ -444,7 +450,7 @@ const ReportingObligationsCard: React.FC<{
               {obligation.dueDate}
             </div>
           </div>
-          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors ml-3 flex-shrink-0">
             <ChevronRight className="h-4 w-4 text-primary" />
           </div>
         </div>
@@ -482,15 +488,15 @@ const ServiceApplicationsCard: React.FC<{
       {applications.map((application) => (
         <div
           key={application.id}
-          className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors group"
+          className="flex items-start justify-between p-4 border border-border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors group"
           onClick={() => onApplicationClick?.(application.id)}
         >
-          <div className="flex-1">
-            <div className="flex items-center space-x-3 mb-2">
-              <span className="text-sm font-medium text-foreground">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+              <span className="text-sm font-medium text-foreground truncate">
                 {application.title}
               </span>
-              <Badge variant="default" className="text-xs">
+              <Badge variant="default" className="text-xs w-fit">
                 {application.status}
               </Badge>
             </div>
@@ -498,7 +504,7 @@ const ServiceApplicationsCard: React.FC<{
               {application.lastUpdated}
             </div>
           </div>
-          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors ml-3 flex-shrink-0">
             <ChevronRight className="h-4 w-4 text-primary" />
           </div>
         </div>
@@ -529,13 +535,15 @@ const QuickAccessCard: React.FC<{
           <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-4 group-hover:bg-primary/20 transition-colors">
             <item.icon className="h-5 w-5 text-primary" />
           </div>
-          <div className="flex-1">
-            <div className="text-sm font-medium text-foreground">
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium text-foreground truncate">
               {item.title}
             </div>
-            <div className="text-xs text-muted-foreground">{item.subtitle}</div>
+            <div className="text-xs text-muted-foreground line-clamp-2">
+              {item.subtitle}
+            </div>
           </div>
-          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
             <ChevronRight className="h-4 w-4 text-primary" />
           </div>
         </div>
@@ -788,25 +796,25 @@ const OverviewPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-muted/20 p-6">
+    <div className="min-h-screen bg-muted/20">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-            <div className="flex items-center justify-between">
+        <div className="mb-4 md:mb-6">
+          <div className="bg-card border border-border rounded-xl p-3 md:p-4 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                   Dashboard Overview
                 </h1>
-                <p className="text-muted-foreground">
-                  Welcome back! Heres your business summary.
+                <p className="text-muted-foreground text-sm md:text-base">
+                  Welcome back! Here&apos;s your business summary.
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-primary/10 rounded-lg">
-                  <Building2 className="h-6 w-6 text-primary" />
+                <div className="p-2 md:p-3 bg-primary/10 rounded-lg">
+                  <Building2 className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                 </div>
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   <p className="text-sm font-medium text-foreground">
                     {companyInfo.companyName}
                   </p>
@@ -820,9 +828,9 @@ const OverviewPage: React.FC = () => {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
           {/* Left Column - 2/3 width */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-3 md:space-y-4 lg:space-y-6">
             {/* Company Info Card */}
             <CompanyInfoCard
               {...companyInfo}
@@ -851,7 +859,7 @@ const OverviewPage: React.FC = () => {
           </div>
 
           {/* Right Column - 1/3 width */}
-          <div className="space-y-8">
+          <div className="space-y-3 md:space-y-4 lg:space-y-6">
             {/* Quick Access Card */}
             <QuickAccessCard
               items={quickAccessItems}

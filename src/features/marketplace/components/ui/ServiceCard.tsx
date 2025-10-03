@@ -17,7 +17,7 @@ import {
   Wallet,
 } from "lucide-react";
 import Link from "next/link";
-import { FinancialService } from "../../types";
+import { FinancialService } from "../../financial-services/types";
 
 interface ServiceCardProps {
   service: FinancialService;

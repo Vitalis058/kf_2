@@ -12,7 +12,7 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import { SearchHeaderProps } from "../../types";
+import { SearchHeaderProps } from "../../financial-services/types";
 
 export const SearchHeader: React.FC<SearchHeaderProps> = ({
   searchQuery,

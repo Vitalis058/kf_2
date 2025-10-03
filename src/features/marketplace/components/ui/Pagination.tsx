@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
-import { PaginationProps } from "../../types";
+import { PaginationProps } from "../../financial-services/types";
 
 export const Pagination: React.FC<PaginationProps> = ({
   currentPage,

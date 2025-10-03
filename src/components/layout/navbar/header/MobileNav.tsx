@@ -28,8 +28,11 @@ import {
   Calendar,
   Sparkles,
   ChevronDown,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/hooks/useAuth";
+import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 
 // Explore dropdown items - matching MainNav
@@ -102,6 +105,7 @@ const exploreItems = [
 
 export function MobileNav() {
   const { isAuthenticated, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showExploreDropdown, setShowExploreDropdown] = useState(false);
   const [showDashboardDropdown, setShowDashboardDropdown] = useState(false);
@@ -316,6 +320,25 @@ export function MobileNav() {
                   {/* Footer */}
                   <div className="p-4 border-t border-border">
                     <div className="space-y-3">
+                      {/* Theme Toggle */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start gap-3 p-2.5 h-auto hover:bg-muted/50"
+                        onClick={() =>
+                          setTheme(theme === "dark" ? "light" : "dark")
+                        }
+                      >
+                        {theme === "dark" ? (
+                          <Sun className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <Moon className="h-4 w-4 text-muted-foreground" />
+                        )}
+                        <span className="text-sm font-medium">
+                          {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                        </span>
+                      </Button>
+
                       <div className="flex items-center gap-3 p-2 rounded-md bg-muted/30">
                         <Phone className="h-4 w-4 text-muted-foreground" />
                         <div>
@@ -328,7 +351,7 @@ export function MobileNav() {
                         </div>
                       </div>
 
-                      {isAuthenticated && (
+                      {isAuthenticated ? (
                         <Button
                           variant="outline"
                           size="sm"
@@ -340,6 +363,35 @@ export function MobileNav() {
                         >
                           Sign Out
                         </Button>
+                      ) : (
+                        <div className="space-y-2">
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="w-full"
+                            asChild
+                          >
+                            <Link
+                              href="/login"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              Sign In
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            asChild
+                          >
+                            <Link
+                              href="/register"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              Sign Up
+                            </Link>
+                          </Button>
+                        </div>
                       )}
                     </div>
                   </div>

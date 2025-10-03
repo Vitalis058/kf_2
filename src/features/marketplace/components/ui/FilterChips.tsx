@@ -4,12 +4,12 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { SearchFilters, FilterState } from "../../types";
 import {
+  SearchFilters,
+  FilterState,
   FINANCIAL_SERVICE_CATEGORIES,
   INDUSTRY_OPTIONS,
-  PRICING_MODELS,
-} from "../../types";
+} from "../../financial-services/types";
 
 interface FilterChipsProps {
   searchFilters: SearchFilters;
@@ -56,32 +56,24 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
       });
     }
 
-    // Industry filter
-    if (searchFilters.selectedIndustry !== "all") {
-      const industry = INDUSTRY_OPTIONS.find(
-        (i) => i.value === searchFilters.selectedIndustry
-      );
-      if (industry) {
-        chips.push({
-          type: "industry",
-          value: searchFilters.selectedIndustry,
-          label: `Industry: ${industry.label}`,
-        });
-      }
-    }
-
-    // Pricing filter
-    if (searchFilters.selectedPricing !== "all") {
-      const pricing = PRICING_MODELS.find(
-        (p) => p.value === searchFilters.selectedPricing
-      );
-      if (pricing) {
-        chips.push({
-          type: "pricing",
-          value: searchFilters.selectedPricing,
-          label: `Pricing: ${pricing.label}`,
-        });
-      }
+    // Industry filters (from filterStates)
+    if (filterStates.industry && typeof filterStates.industry === "object") {
+      Object.keys(filterStates.industry).forEach((industryValue) => {
+        if (
+          (filterStates.industry as { [key: string]: boolean })[industryValue]
+        ) {
+          const industry = INDUSTRY_OPTIONS.find(
+            (i) => i.value === industryValue
+          );
+          if (industry) {
+            chips.push({
+              type: "industry",
+              value: industryValue,
+              label: `Industry: ${industry.label}`,
+            });
+          }
+        }
+      });
     }
 
     // New services filter

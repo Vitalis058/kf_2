@@ -125,7 +125,9 @@ export default function FeaturedServices() {
           </div>
 
           <Button
-            onClick={() => (window.location.href = "/marketplace")}
+            onClick={() =>
+              (window.location.href = "/marketplace/financial-services")
+            }
             className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
           >
             <span className="flex items-center gap-2">

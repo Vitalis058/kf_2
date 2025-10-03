@@ -110,7 +110,7 @@ export default function MarketplaceGrid() {
           {marketplaceItems.map((item, index) => (
             <Link
               key={index}
-              href={item.comingSoon ? "#" : "/marketplace"}
+              href={item.comingSoon ? "#" : "/marketplace/financial-services"}
               className={`flex flex-col items-center text-center group ${
                 item.comingSoon
                   ? "cursor-not-allowed opacity-75"
@@ -161,7 +161,7 @@ export default function MarketplaceGrid() {
             Ready to explore our comprehensive marketplace ecosystem?
           </p>
           <Link
-            href="/marketplace"
+            href="/marketplace/financial-services"
             className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
             View All Marketplaces

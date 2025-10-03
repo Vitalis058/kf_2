@@ -149,7 +149,7 @@ const exploreItems = [
 export function MainNav() {
   const [scrolled, setScrolled] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const { isAuthenticated, user, signIn, signOut, isLoading } = useAuth();
+  const { isAuthenticated, user, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
 
   // Count unread notifications
@@ -432,14 +432,22 @@ export function MainNav() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button
-                variant="ghost"
-                onClick={signIn}
-                disabled={isLoading}
-                className="hidden sm:flex transition-all rounded-full text-white hover:text-white hover:bg-white/20"
-              >
-                {isLoading ? "Signing In..." : "Sign In"}
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  asChild
+                  className="hidden sm:flex transition-all rounded-full text-white hover:text-white hover:bg-white/20"
+                >
+                  <Link href="/login">Sign In</Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  asChild
+                  className="hidden sm:flex transition-all rounded-full bg-blue-500/20 text-primary dark:text-white hover:bg-white/90 border-white"
+                >
+                  <Link href="/register">Sign Up</Link>
+                </Button>
+              </div>
             )}
           </div>
         </div>
