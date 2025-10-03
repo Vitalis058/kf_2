@@ -24,7 +24,6 @@ import {
   Eye,
   LucideProps,
 } from "lucide-react";
-import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 
 // TypeScript interfaces for data
 interface ReportingObligation {
@@ -58,14 +57,7 @@ interface FeeInfo {
   nextDueDate: string;
 }
 
-// Chart data
-const profileCompletionData = [
-  {
-    name: "Completion",
-    value: 60,
-    fill: "hsl(var(--primary))",
-  },
-];
+// Chart data - removed as no longer needed
 
 // const serviceTrendData = [
 //   { month: "Jan", applications: 2, approvals: 1 },
@@ -211,61 +203,196 @@ const CompanyInfoCard: React.FC<{
 const ProfileCompletionCard: React.FC<{
   completionPercentage: number;
   onCompleteProfile?: () => void;
-}> = ({ completionPercentage, onCompleteProfile }) => (
-  <Card className="hover:shadow-md transition-all duration-200">
-    <CardHeader className="pb-4">
-      <CardTitle className="flex items-center space-x-2">
-        <div className="p-2 bg-primary/10 rounded-lg">
-          <Users className="h-5 w-5 text-primary" />
-        </div>
-        <span className="text-foreground">Profile Completion</span>
-      </CardTitle>
-    </CardHeader>
-    <CardContent className="space-y-6">
-      <div className="flex items-center justify-center relative">
-        <div className="w-40 h-40">
-          <ResponsiveContainer width="100%" height="100%">
-            <RadialBarChart
-              cx="50%"
-              cy="50%"
-              innerRadius="60%"
-              outerRadius="90%"
-              barSize={8}
-              data={profileCompletionData}
-              startAngle={180}
-              endAngle={0}
-            >
-              <RadialBar
-                dataKey="value"
-                cornerRadius={8}
-                fill="hsl(var(--primary))"
-              />
-            </RadialBarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-primary">
+}> = ({ completionPercentage, onCompleteProfile }) => {
+  const completionSteps = [
+    {
+      id: 1,
+      title: "Basic Information",
+      completed: true,
+      description: "Company details and contact info",
+    },
+    {
+      id: 2,
+      title: "Business License",
+      completed: true,
+      description: "Upload license documents",
+    },
+    {
+      id: 3,
+      title: "Financial Information",
+      completed: completionPercentage >= 60,
+      description: "Bank details and financial statements",
+    },
+    {
+      id: 4,
+      title: "Compliance Documents",
+      completed: false,
+      description: "AML policies and procedures",
+    },
+    {
+      id: 5,
+      title: "Key Personnel",
+      completed: false,
+      description: "Directors and key management",
+    },
+  ];
+
+  const completedSteps = completionSteps.filter(
+    (step) => step.completed
+  ).length;
+  const nextStep = completionSteps.find((step) => !step.completed);
+
+  return (
+    <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center space-x-3">
+            <div className="p-3 bg-gradient-to-br from-primary to-accent rounded-xl shadow-lg">
+              <Users className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <div>
+              <span className="text-foreground text-xl">
+                Profile Completion
+              </span>
+              <p className="text-sm text-muted-foreground font-normal">
+                {completedSteps} of {completionSteps.length} steps completed
+              </p>
+            </div>
+          </CardTitle>
+          <div className="text-right">
+            <div className="text-3xl font-bold text-primary mb-1">
               {completionPercentage}%
             </div>
-            <div className="text-xs text-muted-foreground">Complete</div>
+            <Badge
+              variant={completionPercentage >= 80 ? "default" : "secondary"}
+              className={
+                completionPercentage >= 80
+                  ? "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300"
+                  : ""
+              }
+            >
+              {completionPercentage >= 80
+                ? "Excellent"
+                : completionPercentage >= 60
+                ? "Good"
+                : "Needs Work"}
+            </Badge>
           </div>
         </div>
-      </div>
-      <div className="space-y-3">
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Profile Status</span>
-          <span className="font-medium text-foreground">
-            {completionPercentage >= 80 ? "Well Completed" : "Needs Attention"}
-          </span>
+      </CardHeader>
+
+      <CardContent className="space-y-6">
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Overall Progress</span>
+            <span className="font-medium text-foreground">
+              {completionPercentage}%
+            </span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500 ease-out relative"
+              style={{ width: `${completionPercentage}%` }}
+            >
+              <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+            </div>
+          </div>
         </div>
-        <Button onClick={onCompleteProfile} className="w-full">
-          {completionPercentage >= 80 ? "Update Profile" : "Complete Profile"}
-        </Button>
-      </div>
-    </CardContent>
-  </Card>
-);
+
+        {/* Next Step Highlight */}
+        {nextStep && (
+          <div className="bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-primary">
+                  {nextStep.id}
+                </span>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground">
+                  Next: {nextStep.title}
+                </h4>
+                <p className="text-sm text-muted-foreground">
+                  {nextStep.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Completion Steps */}
+        <div className="space-y-3">
+          <h4 className="font-medium text-foreground flex items-center gap-2">
+            <CheckCircle className="h-4 w-4 text-primary" />
+            Completion Checklist
+          </h4>
+          <div className="space-y-2">
+            {completionSteps.map((step) => (
+              <div
+                key={step.id}
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
+              >
+                <div
+                  className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                    step.completed
+                      ? "bg-green-100 dark:bg-green-900/20"
+                      : "bg-muted border-2 border-muted-foreground/20"
+                  }`}
+                >
+                  {step.completed && (
+                    <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div
+                    className={`text-sm font-medium ${
+                      step.completed
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {step.title}
+                  </div>
+                </div>
+                {step.completed && (
+                  <Badge
+                    variant="outline"
+                    className="text-xs bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                  >
+                    Done
+                  </Badge>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <div className="pt-4 border-t border-border">
+          <Button
+            onClick={onCompleteProfile}
+            className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+          >
+            <span className="flex items-center justify-center gap-2">
+              {completionPercentage >= 80
+                ? "Review & Update Profile"
+                : "Continue Setup"}
+              <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+            </span>
+          </Button>
+
+          {completionPercentage < 100 && (
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              Complete your profile to unlock all features and improve your
+              application success rate
+            </p>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 // ReportingObligationsCard Component
 const ReportingObligationsCard: React.FC<{

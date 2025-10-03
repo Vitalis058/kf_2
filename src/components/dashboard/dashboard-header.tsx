@@ -1,10 +1,11 @@
 "use client";
 
-import { Bell, Search } from "lucide-react";
+import { Bell, Search, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { useTheme } from "next-themes";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,6 +24,8 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ breadcrumbs }: DashboardHeaderProps) {
+  const { theme, setTheme } = useTheme();
+
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
       <SidebarTrigger className="-ml-1" />
@@ -62,6 +65,19 @@ export function DashboardHeader({ breadcrumbs }: DashboardHeaderProps) {
             />
           </div>
         </div>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? (
+            <Sun className="h-4 w-4" />
+          ) : (
+            <Moon className="h-4 w-4" />
+          )}
+          <span className="sr-only">Toggle theme</span>
+        </Button>
 
         <Button variant="ghost" size="sm">
           <Bell className="h-4 w-4" />

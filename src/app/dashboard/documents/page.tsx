@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 import {
   Card,
   CardContent,
@@ -9,28 +10,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DataTable } from "@/components/shared/data-table/data-table";
 import {
   FileText,
   Upload,
   Download,
-  Search,
   Filter,
   MoreHorizontal,
   Eye,
@@ -40,6 +32,7 @@ import {
   Image,
   FileSpreadsheet,
   FileArchive,
+  ArrowUpDown,
 } from "lucide-react";
 
 interface Document {
@@ -54,62 +47,64 @@ interface Document {
 }
 
 const DocumentsPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   // Sample documents data
-  const documents: Document[] = [
-    {
-      id: "1",
-      name: "Company Registration Certificate",
-      type: "PDF",
-      size: "2.4 MB",
-      uploadedBy: "Ahmed Al Mansoori",
-      uploadDate: "2024-01-15",
-      status: "Active",
-      category: "Legal",
-    },
-    {
-      id: "2",
-      name: "Financial Statements 2023",
-      type: "Excel",
-      size: "1.8 MB",
-      uploadedBy: "Sarah Johnson",
-      uploadDate: "2024-01-10",
-      status: "Active",
-      category: "Financial",
-    },
-    {
-      id: "3",
-      name: "Business License",
-      type: "PDF",
-      size: "856 KB",
-      uploadedBy: "Ahmed Al Mansoori",
-      uploadDate: "2024-01-05",
-      status: "Active",
-      category: "Legal",
-    },
-    {
-      id: "4",
-      name: "Employee Contracts",
-      type: "Word",
-      size: "3.2 MB",
-      uploadedBy: "HR Department",
-      uploadDate: "2024-01-01",
-      status: "Active",
-      category: "HR",
-    },
-    {
-      id: "5",
-      name: "Marketing Materials",
-      type: "Image",
-      size: "5.1 MB",
-      uploadedBy: "Marketing Team",
-      uploadDate: "2023-12-28",
-      status: "Archived",
-      category: "Marketing",
-    },
-  ];
+  const documents: Document[] = useMemo(
+    () => [
+      {
+        id: "1",
+        name: "Company Registration Certificate",
+        type: "PDF",
+        size: "2.4 MB",
+        uploadedBy: "Ahmed Al Mansoori",
+        uploadDate: "2024-01-15",
+        status: "Active",
+        category: "Legal",
+      },
+      {
+        id: "2",
+        name: "Financial Statements 2023",
+        type: "Excel",
+        size: "1.8 MB",
+        uploadedBy: "Sarah Johnson",
+        uploadDate: "2024-01-10",
+        status: "Active",
+        category: "Financial",
+      },
+      {
+        id: "3",
+        name: "Business License",
+        type: "PDF",
+        size: "856 KB",
+        uploadedBy: "Ahmed Al Mansoori",
+        uploadDate: "2024-01-05",
+        status: "Active",
+        category: "Legal",
+      },
+      {
+        id: "4",
+        name: "Employee Contracts",
+        type: "Word",
+        size: "3.2 MB",
+        uploadedBy: "HR Department",
+        uploadDate: "2024-01-01",
+        status: "Active",
+        category: "HR",
+      },
+      {
+        id: "5",
+        name: "Marketing Materials",
+        type: "Image",
+        size: "5.1 MB",
+        uploadedBy: "Marketing Team",
+        uploadDate: "2023-12-28",
+        status: "Archived",
+        category: "Marketing",
+      },
+    ],
+    []
+  );
 
   const categories = [
     "all",
@@ -120,14 +115,13 @@ const DocumentsPage: React.FC = () => {
     "Technical",
   ];
 
-  const filteredDocuments = documents.filter((doc) => {
-    const matchesSearch = doc.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || doc.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredDocuments = useMemo(() => {
+    return documents.filter((doc) => {
+      const matchesCategory =
+        selectedCategory === "all" || doc.category === selectedCategory;
+      return matchesCategory;
+    });
+  }, [documents, selectedCategory]);
 
   const getFileIcon = (type: string) => {
     switch (type.toLowerCase()) {
@@ -158,6 +152,363 @@ const DocumentsPage: React.FC = () => {
     }
   };
 
+  // Column definitions for all documents table
+  const allDocumentsColumns: ColumnDef<Document>[] = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Name
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const document = row.original;
+          return (
+            <div className="flex items-center space-x-3">
+              {getFileIcon(document.type)}
+              <div>
+                <div className="font-medium">{document.name}</div>
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "type",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Type
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const type = row.getValue("type") as string;
+          return <Badge variant="outline">{type}</Badge>;
+        },
+      },
+      {
+        accessorKey: "size",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Size
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("size")}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "category",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Category
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const category = row.getValue("category") as string;
+          return <Badge variant="secondary">{category}</Badge>;
+        },
+      },
+      {
+        accessorKey: "uploadedBy",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Uploaded By
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("uploadedBy")}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "uploadDate",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Date
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("uploadDate")}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Status
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const status = row.getValue("status") as string;
+          return <Badge className={getStatusColor(status)}>{status}</Badge>;
+        },
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: () => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Eye className="h-4 w-4 mr-2" />
+                  View
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Share className="h-4 w-4 mr-2" />
+                  Share
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ],
+    []
+  );
+
+  // Column definitions for archived documents table
+  const archivedDocumentsColumns: ColumnDef<Document>[] = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Name
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const document = row.original;
+          return (
+            <div className="flex items-center space-x-3">
+              {getFileIcon(document.type)}
+              <div>
+                <div className="font-medium">{document.name}</div>
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "type",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Type
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const type = row.getValue("type") as string;
+          return <Badge variant="outline">{type}</Badge>;
+        },
+      },
+      {
+        accessorKey: "size",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Size
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("size")}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "category",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Category
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const category = row.getValue("category") as string;
+          return <Badge variant="secondary">{category}</Badge>;
+        },
+      },
+      {
+        accessorKey: "uploadDate",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Archived Date
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("uploadDate")}
+            </span>
+          );
+        },
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: () => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Eye className="h-4 w-4 mr-2" />
+                  View
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Restore
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ],
+    []
+  );
+
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -175,19 +526,10 @@ const DocumentsPage: React.FC = () => {
           </Button>
         </div>
 
-        {/* Search and Filter */}
+        {/* Filter */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center space-x-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search documents..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -195,7 +537,10 @@ const DocumentsPage: React.FC = () => {
                     className="flex items-center space-x-2"
                   >
                     <Filter className="h-4 w-4" />
-                    <span>Category</span>
+                    <span>
+                      Category:{" "}
+                      {selectedCategory === "all" ? "All" : selectedCategory}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -234,81 +579,12 @@ const DocumentsPage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Size</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Uploaded By</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="w-[50px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredDocuments.map((document) => (
-                      <TableRow key={document.id}>
-                        <TableCell>
-                          <div className="flex items-center space-x-3">
-                            {getFileIcon(document.type)}
-                            <div>
-                              <div className="font-medium">{document.name}</div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{document.type}</Badge>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {document.size}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">{document.category}</Badge>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {document.uploadedBy}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {document.uploadDate}
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={getStatusColor(document.status)}>
-                            {document.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>
-                                <Eye className="h-4 w-4 mr-2" />
-                                View
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Download className="h-4 w-4 mr-2" />
-                                Download
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Share className="h-4 w-4 mr-2" />
-                                Share
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-destructive">
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <DataTable
+                  columns={allDocumentsColumns}
+                  data={filteredDocuments}
+                  searchKey="name"
+                  searchPlaceholder="Search documents by name..."
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -354,73 +630,14 @@ const DocumentsPage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Size</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Archived Date</TableHead>
-                      <TableHead className="w-[50px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredDocuments
-                      .filter((doc) => doc.status === "Archived")
-                      .map((document) => (
-                        <TableRow key={document.id}>
-                          <TableCell>
-                            <div className="flex items-center space-x-3">
-                              {getFileIcon(document.type)}
-                              <div>
-                                <div className="font-medium">
-                                  {document.name}
-                                </div>
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">{document.type}</Badge>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {document.size}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">
-                              {document.category}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {document.uploadDate}
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                  <Eye className="h-4 w-4 mr-2" />
-                                  View
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Download className="h-4 w-4 mr-2" />
-                                  Download
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <FileText className="h-4 w-4 mr-2" />
-                                  Restore
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
+                <DataTable
+                  columns={archivedDocumentsColumns}
+                  data={filteredDocuments.filter(
+                    (doc) => doc.status === "Archived"
+                  )}
+                  searchKey="name"
+                  searchPlaceholder="Search archived documents..."
+                />
               </CardContent>
             </Card>
           </TabsContent>

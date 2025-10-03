@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 import {
   Card,
   CardContent,
@@ -10,16 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,10 +19,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Progress } from "@/components/ui/progress";
+import { DataTable } from "@/components/shared/data-table/data-table";
 import {
   FileText,
   Plus,
-  Search,
   Filter,
   MoreHorizontal,
   Eye,
@@ -46,6 +38,7 @@ import {
   Shield,
   ChartBar,
   MapPin,
+  ArrowUpDown,
 } from "lucide-react";
 
 interface ServiceRequest {
@@ -62,72 +55,74 @@ interface ServiceRequest {
 }
 
 const NonFinancialRecordsPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
 
   // Sample service requests data
-  const serviceRequests: ServiceRequest[] = [
-    {
-      id: "REQ-001",
-      title: "Business Advisory Consultation",
-      type: "Advisory Services",
-      status: "Under Review",
-      progress: 75,
-      submittedDate: "2024-01-15",
-      lastUpdated: "2024-01-20",
-      assignedTo: "Sarah Johnson",
-      priority: "High",
-      category: "Advisory",
-    },
-    {
-      id: "REQ-002",
-      title: "Export Training Program Registration",
-      type: "Training Program",
-      status: "Approved",
-      progress: 100,
-      submittedDate: "2024-01-10",
-      lastUpdated: "2024-01-18",
-      assignedTo: "Ahmed Al Mansoori",
-      priority: "Medium",
-      category: "Training",
-    },
-    {
-      id: "REQ-003",
-      title: "Legal Compliance Review",
-      type: "Legal Services",
-      status: "Submitted",
-      progress: 50,
-      submittedDate: "2024-01-12",
-      lastUpdated: "2024-01-19",
-      assignedTo: "Legal Team",
-      priority: "High",
-      category: "Legal",
-    },
-    {
-      id: "REQ-004",
-      title: "Digital Solutions Consultation",
-      type: "Digital Services",
-      status: "Draft",
-      progress: 25,
-      submittedDate: "2024-01-08",
-      lastUpdated: "2024-01-15",
-      assignedTo: "Tech Team",
-      priority: "Low",
-      category: "Digital",
-    },
-    {
-      id: "REQ-005",
-      title: "Partnership Opportunity Discussion",
-      type: "Partnership",
-      status: "Rejected",
-      progress: 0,
-      submittedDate: "2024-01-05",
-      lastUpdated: "2024-01-12",
-      assignedTo: "Business Development",
-      priority: "Medium",
-      category: "Partnership",
-    },
-  ];
+  const serviceRequests: ServiceRequest[] = useMemo(
+    () => [
+      {
+        id: "REQ-001",
+        title: "Business Advisory Consultation",
+        type: "Advisory Services",
+        status: "Under Review",
+        progress: 75,
+        submittedDate: "2024-01-15",
+        lastUpdated: "2024-01-20",
+        assignedTo: "Sarah Johnson",
+        priority: "High",
+        category: "Advisory",
+      },
+      {
+        id: "REQ-002",
+        title: "Export Training Program Registration",
+        type: "Training Program",
+        status: "Approved",
+        progress: 100,
+        submittedDate: "2024-01-10",
+        lastUpdated: "2024-01-18",
+        assignedTo: "Ahmed Al Mansoori",
+        priority: "Medium",
+        category: "Training",
+      },
+      {
+        id: "REQ-003",
+        title: "Legal Compliance Review",
+        type: "Legal Services",
+        status: "Submitted",
+        progress: 50,
+        submittedDate: "2024-01-12",
+        lastUpdated: "2024-01-19",
+        assignedTo: "Legal Team",
+        priority: "High",
+        category: "Legal",
+      },
+      {
+        id: "REQ-004",
+        title: "Digital Solutions Consultation",
+        type: "Digital Services",
+        status: "Draft",
+        progress: 25,
+        submittedDate: "2024-01-08",
+        lastUpdated: "2024-01-15",
+        assignedTo: "Tech Team",
+        priority: "Low",
+        category: "Digital",
+      },
+      {
+        id: "REQ-005",
+        title: "Partnership Opportunity Discussion",
+        type: "Partnership",
+        status: "Rejected",
+        progress: 0,
+        submittedDate: "2024-01-05",
+        lastUpdated: "2024-01-12",
+        assignedTo: "Business Development",
+        priority: "Medium",
+        category: "Partnership",
+      },
+    ],
+    []
+  );
 
   const categories = [
     { name: "Advisory", icon: Lightbulb, color: "text-blue-500" },
@@ -138,14 +133,13 @@ const NonFinancialRecordsPage: React.FC = () => {
     { name: "Export", icon: MapPin, color: "text-cyan-500" },
   ];
 
-  const filteredRequests = serviceRequests.filter((request) => {
-    const matchesSearch = request.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      selectedStatus === "all" || request.status === selectedStatus;
-    return matchesSearch && matchesStatus;
-  });
+  const filteredRequests = useMemo(() => {
+    return serviceRequests.filter((request) => {
+      const matchesStatus =
+        selectedStatus === "all" || request.status === selectedStatus;
+      return matchesStatus;
+    });
+  }, [serviceRequests, selectedStatus]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -205,6 +199,573 @@ const NonFinancialRecordsPage: React.FC = () => {
     return <Building2 className="h-4 w-4 text-gray-500" />;
   };
 
+  // Column definitions for all requests table
+  const allRequestsColumns: ColumnDef<ServiceRequest>[] = useMemo(
+    () => [
+      {
+        accessorKey: "title",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Request
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const request = row.original;
+          return (
+            <div className="space-y-1">
+              <div className="font-medium">{request.title}</div>
+              <div className="text-sm text-muted-foreground">
+                {request.id} • {request.type}
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "category",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Category
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const category = row.getValue("category") as string;
+          return (
+            <div className="flex items-center space-x-2">
+              {getCategoryIcon(category)}
+              <span className="text-sm">{category}</span>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Status
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const status = row.getValue("status") as string;
+          return (
+            <div className="flex items-center space-x-2">
+              {getStatusIcon(status)}
+              <Badge className={getStatusColor(status)}>{status}</Badge>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "progress",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Progress
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const progress = row.getValue("progress") as number;
+          return (
+            <div className="space-y-1">
+              <Progress value={progress} className="w-20" />
+              <div className="text-xs text-muted-foreground">{progress}%</div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "priority",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Priority
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const priority = row.getValue("priority") as string;
+          return (
+            <Badge className={getPriorityColor(priority)}>{priority}</Badge>
+          );
+        },
+      },
+      {
+        accessorKey: "assignedTo",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Assigned To
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("assignedTo")}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "lastUpdated",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Last Updated
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("lastUpdated")}
+            </span>
+          );
+        },
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: () => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Details
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Download
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ],
+    [getCategoryIcon]
+  );
+
+  // Column definitions for active requests table
+  const activeRequestsColumns: ColumnDef<ServiceRequest>[] = useMemo(
+    () => [
+      {
+        accessorKey: "title",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Request
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const request = row.original;
+          return (
+            <div className="space-y-1">
+              <div className="font-medium">{request.title}</div>
+              <div className="text-sm text-muted-foreground">{request.id}</div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Status
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const status = row.getValue("status") as string;
+          return (
+            <div className="flex items-center space-x-2">
+              {getStatusIcon(status)}
+              <Badge className={getStatusColor(status)}>{status}</Badge>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "progress",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Progress
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const progress = row.getValue("progress") as number;
+          return (
+            <div className="space-y-1">
+              <Progress value={progress} className="w-20" />
+              <div className="text-xs text-muted-foreground">{progress}%</div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "assignedTo",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Assigned To
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("assignedTo")}
+            </span>
+          );
+        },
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: () => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Details
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ],
+    []
+  );
+
+  // Column definitions for completed requests table
+  const completedRequestsColumns: ColumnDef<ServiceRequest>[] = useMemo(
+    () => [
+      {
+        accessorKey: "title",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Request
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const request = row.original;
+          return (
+            <div className="space-y-1">
+              <div className="font-medium">{request.title}</div>
+              <div className="text-sm text-muted-foreground">{request.id}</div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Status
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const status = row.getValue("status") as string;
+          return (
+            <div className="flex items-center space-x-2">
+              {getStatusIcon(status)}
+              <Badge className={getStatusColor(status)}>{status}</Badge>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "lastUpdated",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Completed Date
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("lastUpdated")}
+            </span>
+          );
+        },
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: () => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Details
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Download
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ],
+    []
+  );
+
+  // Column definitions for draft requests table
+  const draftRequestsColumns: ColumnDef<ServiceRequest>[] = useMemo(
+    () => [
+      {
+        accessorKey: "title",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Request
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const request = row.original;
+          return (
+            <div className="space-y-1">
+              <div className="font-medium">{request.title}</div>
+              <div className="text-sm text-muted-foreground">{request.id}</div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "progress",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Progress
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const progress = row.getValue("progress") as number;
+          return (
+            <div className="space-y-1">
+              <Progress value={progress} className="w-20" />
+              <div className="text-xs text-muted-foreground">{progress}%</div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "lastUpdated",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Last Modified
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("lastUpdated")}
+            </span>
+          );
+        },
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: () => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Continue Editing
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Eye className="h-4 w-4 mr-2" />
+                  Preview
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Submit
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ],
+    []
+  );
+
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -222,19 +783,10 @@ const NonFinancialRecordsPage: React.FC = () => {
           </Button>
         </div>
 
-        {/* Search and Filter */}
+        {/* Filter */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center space-x-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search requests..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -242,7 +794,10 @@ const NonFinancialRecordsPage: React.FC = () => {
                     className="flex items-center space-x-2"
                   >
                     <Filter className="h-4 w-4" />
-                    <span>Status</span>
+                    <span>
+                      Status:{" "}
+                      {selectedStatus === "all" ? "All" : selectedStatus}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -342,93 +897,12 @@ const NonFinancialRecordsPage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Request</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Progress</TableHead>
-                      <TableHead>Priority</TableHead>
-                      <TableHead>Assigned To</TableHead>
-                      <TableHead>Last Updated</TableHead>
-                      <TableHead className="w-[50px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredRequests.map((request) => (
-                      <TableRow key={request.id}>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="font-medium">{request.title}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {request.id} • {request.type}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-2">
-                            {getCategoryIcon(request.category)}
-                            <span className="text-sm">{request.category}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-2">
-                            {getStatusIcon(request.status)}
-                            <Badge className={getStatusColor(request.status)}>
-                              {request.status}
-                            </Badge>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <Progress
-                              value={request.progress}
-                              className="w-20"
-                            />
-                            <div className="text-xs text-muted-foreground">
-                              {request.progress}%
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={getPriorityColor(request.priority)}>
-                            {request.priority}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {request.assignedTo}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {request.lastUpdated}
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>
-                                <Eye className="h-4 w-4 mr-2" />
-                                View Details
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <FileText className="h-4 w-4 mr-2" />
-                                Download
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <DataTable
+                  columns={allRequestsColumns}
+                  data={filteredRequests}
+                  searchKey="title"
+                  searchPlaceholder="Search requests by title..."
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -442,76 +916,14 @@ const NonFinancialRecordsPage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Request</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Progress</TableHead>
-                      <TableHead>Assigned To</TableHead>
-                      <TableHead className="w-[50px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredRequests
-                      .filter((req) =>
-                        ["Submitted", "Under Review"].includes(req.status)
-                      )
-                      .map((request) => (
-                        <TableRow key={request.id}>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <div className="font-medium">{request.title}</div>
-                              <div className="text-sm text-muted-foreground">
-                                {request.id}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center space-x-2">
-                              {getStatusIcon(request.status)}
-                              <Badge className={getStatusColor(request.status)}>
-                                {request.status}
-                              </Badge>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <Progress
-                                value={request.progress}
-                                className="w-20"
-                              />
-                              <div className="text-xs text-muted-foreground">
-                                {request.progress}%
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {request.assignedTo}
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                  <Eye className="h-4 w-4 mr-2" />
-                                  View Details
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Edit
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
+                <DataTable
+                  columns={activeRequestsColumns}
+                  data={filteredRequests.filter((req) =>
+                    ["Submitted", "Under Review"].includes(req.status)
+                  )}
+                  searchKey="title"
+                  searchPlaceholder="Search active requests..."
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -525,64 +937,14 @@ const NonFinancialRecordsPage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Request</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Completed Date</TableHead>
-                      <TableHead className="w-[50px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredRequests
-                      .filter((req) =>
-                        ["Approved", "Rejected"].includes(req.status)
-                      )
-                      .map((request) => (
-                        <TableRow key={request.id}>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <div className="font-medium">{request.title}</div>
-                              <div className="text-sm text-muted-foreground">
-                                {request.id}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center space-x-2">
-                              {getStatusIcon(request.status)}
-                              <Badge className={getStatusColor(request.status)}>
-                                {request.status}
-                              </Badge>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {request.lastUpdated}
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                  <Eye className="h-4 w-4 mr-2" />
-                                  View Details
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <FileText className="h-4 w-4 mr-2" />
-                                  Download
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
+                <DataTable
+                  columns={completedRequestsColumns}
+                  data={filteredRequests.filter((req) =>
+                    ["Approved", "Rejected"].includes(req.status)
+                  )}
+                  searchKey="title"
+                  searchPlaceholder="Search completed requests..."
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -596,69 +958,14 @@ const NonFinancialRecordsPage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Request</TableHead>
-                      <TableHead>Progress</TableHead>
-                      <TableHead>Last Modified</TableHead>
-                      <TableHead className="w-[50px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredRequests
-                      .filter((req) => req.status === "Draft")
-                      .map((request) => (
-                        <TableRow key={request.id}>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <div className="font-medium">{request.title}</div>
-                              <div className="text-sm text-muted-foreground">
-                                {request.id}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <Progress
-                                value={request.progress}
-                                className="w-20"
-                              />
-                              <div className="text-xs text-muted-foreground">
-                                {request.progress}%
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {request.lastUpdated}
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Continue Editing
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Eye className="h-4 w-4 mr-2" />
-                                  Preview
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <FileText className="h-4 w-4 mr-2" />
-                                  Submit
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
+                <DataTable
+                  columns={draftRequestsColumns}
+                  data={filteredRequests.filter(
+                    (req) => req.status === "Draft"
+                  )}
+                  searchKey="title"
+                  searchPlaceholder="Search draft requests..."
+                />
               </CardContent>
             </Card>
           </TabsContent>

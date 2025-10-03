@@ -126,7 +126,6 @@ const FirmProfilePage: React.FC = () => {
                   <h1 className="text-3xl font-bold tracking-tight text-foreground">
                     Firm Profile
                   </h1>
-                  <div className="h-1 w-20 bg-primary rounded-full mt-2" />
                 </div>
               </div>
               <p className="text-muted-foreground text-lg font-medium">

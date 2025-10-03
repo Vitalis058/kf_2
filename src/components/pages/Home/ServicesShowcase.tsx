@@ -90,7 +90,7 @@ export default function ServicesShowcase() {
               <CardTitle className="text-2xl font-bold mb-3 text-foreground">
                 Financial Services
               </CardTitle>
-              <CardDescription className="text-base leading-relaxed text-muted-foreground">
+              <CardDescription className="text-base leading-relaxed text-muted-foreground line-clamp-2">
                 Access diverse funding opportunities and comprehensive financial
                 support for your business growth
               </CardDescription>

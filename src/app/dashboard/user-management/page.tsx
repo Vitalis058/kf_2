@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 import {
   Card,
   CardContent,
@@ -20,14 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -42,8 +35,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DataTable } from "@/components/shared/data-table/data-table";
 import {
-  Search,
   MoreHorizontal,
   Edit,
   Trash2,
@@ -56,6 +49,7 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
+  ArrowUpDown,
 } from "lucide-react";
 
 interface User {
@@ -72,69 +66,71 @@ interface User {
 }
 
 const UserManagementPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
 
   // Sample users data
-  const users: User[] = [
-    {
-      id: "1",
-      name: "Ahmed Al Mansoori",
-      email: "ahmed@futuretech.ae",
-      role: "Admin",
-      department: "Executive",
-      status: "Active",
-      lastLogin: "2024-01-20",
-      joinDate: "2021-01-15",
-      phone: "+971 50 123 4567",
-    },
-    {
-      id: "2",
-      name: "Sarah Johnson",
-      email: "sarah@futuretech.ae",
-      role: "Manager",
-      department: "Finance",
-      status: "Active",
-      lastLogin: "2024-01-19",
-      joinDate: "2022-03-10",
-      phone: "+971 50 234 5678",
-    },
-    {
-      id: "3",
-      name: "Mohammed Al Zahra",
-      email: "mohammed@futuretech.ae",
-      role: "User",
-      department: "Operations",
-      status: "Active",
-      lastLogin: "2024-01-18",
-      joinDate: "2023-06-01",
-      phone: "+971 50 345 6789",
-    },
-    {
-      id: "4",
-      name: "Fatima Al Rashid",
-      email: "fatima@futuretech.ae",
-      role: "User",
-      department: "HR",
-      status: "Pending",
-      lastLogin: "Never",
-      joinDate: "2024-01-15",
-      phone: "+971 50 456 7890",
-    },
-    {
-      id: "5",
-      name: "Omar Hassan",
-      email: "omar@futuretech.ae",
-      role: "Viewer",
-      department: "Legal",
-      status: "Inactive",
-      lastLogin: "2023-12-15",
-      joinDate: "2022-09-20",
-      phone: "+971 50 567 8901",
-    },
-  ];
+  const users: User[] = useMemo(
+    () => [
+      {
+        id: "1",
+        name: "Ahmed Al Mansoori",
+        email: "ahmed@futuretech.ae",
+        role: "Admin",
+        department: "Executive",
+        status: "Active",
+        lastLogin: "2024-01-20",
+        joinDate: "2021-01-15",
+        phone: "+971 50 123 4567",
+      },
+      {
+        id: "2",
+        name: "Sarah Johnson",
+        email: "sarah@futuretech.ae",
+        role: "Manager",
+        department: "Finance",
+        status: "Active",
+        lastLogin: "2024-01-19",
+        joinDate: "2022-03-10",
+        phone: "+971 50 234 5678",
+      },
+      {
+        id: "3",
+        name: "Mohammed Al Zahra",
+        email: "mohammed@futuretech.ae",
+        role: "User",
+        department: "Operations",
+        status: "Active",
+        lastLogin: "2024-01-18",
+        joinDate: "2023-06-01",
+        phone: "+971 50 345 6789",
+      },
+      {
+        id: "4",
+        name: "Fatima Al Rashid",
+        email: "fatima@futuretech.ae",
+        role: "User",
+        department: "HR",
+        status: "Pending",
+        lastLogin: "Never",
+        joinDate: "2024-01-15",
+        phone: "+971 50 456 7890",
+      },
+      {
+        id: "5",
+        name: "Omar Hassan",
+        email: "omar@futuretech.ae",
+        role: "Viewer",
+        department: "Legal",
+        status: "Inactive",
+        lastLogin: "2023-12-15",
+        joinDate: "2022-09-20",
+        phone: "+971 50 567 8901",
+      },
+    ],
+    []
+  );
 
   const roles = ["all", "Admin", "Manager", "User", "Viewer"];
   const statuses = ["all", "Active", "Inactive", "Pending"];
@@ -148,15 +144,15 @@ const UserManagementPage: React.FC = () => {
     "Marketing",
   ];
 
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRole = selectedRole === "all" || user.role === selectedRole;
-    const matchesStatus =
-      selectedStatus === "all" || user.status === selectedStatus;
-    return matchesSearch && matchesRole && matchesStatus;
-  });
+  // Filter users based on role and status
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      const matchesRole = selectedRole === "all" || user.role === selectedRole;
+      const matchesStatus =
+        selectedStatus === "all" || user.status === selectedStatus;
+      return matchesRole && matchesStatus;
+    });
+  }, [users, selectedRole, selectedStatus]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -206,6 +202,207 @@ const UserManagementPage: React.FC = () => {
       .join("")
       .toUpperCase();
   };
+
+  // Column definitions for TanStack Table
+  const columns: ColumnDef<User>[] = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              User
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const user = row.original;
+          return (
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <span className="text-sm font-medium text-primary">
+                  {getInitials(user.name)}
+                </span>
+              </div>
+              <div>
+                <div className="font-medium">{user.name}</div>
+                <div className="text-sm text-muted-foreground flex items-center space-x-1">
+                  <Mail className="h-3 w-3" />
+                  <span>{user.email}</span>
+                </div>
+                {user.phone && (
+                  <div className="text-sm text-muted-foreground flex items-center space-x-1">
+                    <Phone className="h-3 w-3" />
+                    <span>{user.phone}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "role",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Role
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const role = row.getValue("role") as string;
+          return <Badge className={getRoleColor(role)}>{role}</Badge>;
+        },
+      },
+      {
+        accessorKey: "department",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Department
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("department")}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Status
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const status = row.getValue("status") as string;
+          return (
+            <div className="flex items-center space-x-2">
+              {getStatusIcon(status)}
+              <Badge className={getStatusColor(status)}>{status}</Badge>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "lastLogin",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Last Login
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("lastLogin")}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "joinDate",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="h-auto p-0 font-semibold"
+            >
+              Join Date
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          return (
+            <span className="text-muted-foreground">
+              {row.getValue("joinDate")}
+            </span>
+          );
+        },
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: () => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit User
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Shield className="h-4 w-4 mr-2" />
+                  Change Role
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Mail className="h-4 w-4 mr-2" />
+                  Send Email
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete User
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ],
+    []
+  );
 
   return (
     <div className="min-h-screen p-6">
@@ -303,21 +500,12 @@ const UserManagementPage: React.FC = () => {
           </Dialog>
         </div>
 
-        {/* Search and Filter */}
+        {/* Filters */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center space-x-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search users..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
               <Select value={selectedRole} onValueChange={setSelectedRole}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -329,7 +517,7 @@ const UserManagementPage: React.FC = () => {
                 </SelectContent>
               </Select>
               <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -409,7 +597,7 @@ const UserManagementPage: React.FC = () => {
           </Card>
         </div>
 
-        {/* Users Table */}
+        {/* Users Table with TanStack Table */}
         <Card>
           <CardHeader>
             <CardTitle>Users</CardTitle>
@@ -418,96 +606,12 @@ const UserManagementPage: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>User</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Department</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Last Login</TableHead>
-                  <TableHead>Join Date</TableHead>
-                  <TableHead className="w-[50px]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredUsers.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                          <span className="text-sm font-medium text-primary">
-                            {getInitials(user.name)}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-medium">{user.name}</div>
-                          <div className="text-sm text-muted-foreground flex items-center space-x-1">
-                            <Mail className="h-3 w-3" />
-                            <span>{user.email}</span>
-                          </div>
-                          {user.phone && (
-                            <div className="text-sm text-muted-foreground flex items-center space-x-1">
-                              <Phone className="h-3 w-3" />
-                              <span>{user.phone}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getRoleColor(user.role)}>
-                        {user.role}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {user.department}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-2">
-                        {getStatusIcon(user.status)}
-                        <Badge className={getStatusColor(user.status)}>
-                          {user.status}
-                        </Badge>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {user.lastLogin}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {user.joinDate}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
-                            <Edit className="h-4 w-4 mr-2" />
-                            Edit User
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Shield className="h-4 w-4 mr-2" />
-                            Change Role
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Mail className="h-4 w-4 mr-2" />
-                            Send Email
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete User
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable
+              columns={columns}
+              data={filteredUsers}
+              searchKey="name"
+              searchPlaceholder="Search users by name..."
+            />
           </CardContent>
         </Card>
       </div>

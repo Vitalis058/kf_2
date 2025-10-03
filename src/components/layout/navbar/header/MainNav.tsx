@@ -227,22 +227,22 @@ export function MainNav() {
                           <NavigationMenuLink key={item.id} asChild>
                             <Link
                               href={item.href}
-                              className="group relative flex flex-col p-4 rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg focus:shadow-lg focus:outline-none transition-all duration-200 bg-white hover:bg-gray-50"
+                              className="group relative flex flex-col p-4 rounded-xl border border-border hover:border-primary/20 hover:shadow-lg focus:shadow-lg focus:outline-none transition-all duration-200 bg-card hover:bg-accent/50"
                             >
                               <div className="flex items-center mb-2">
-                                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-all duration-200">
+                                <div className="w-8 h-8 rounded-lg bg-background border border-border flex items-center justify-center group-hover:bg-primary/10 transition-all duration-200">
                                   <item.icon
                                     size={16}
                                     className="text-primary"
                                   />
                                 </div>
                                 <div className="ml-3 flex-1">
-                                  <p className="text-sm font-semibold text-gray-900 group-hover:text-gray-700 transition-colors">
+                                  <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                                     {item.name}
                                   </p>
                                 </div>
                               </div>
-                              <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+                              <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
                                 {item.description}
                               </p>
                             </Link>

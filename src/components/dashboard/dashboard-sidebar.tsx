@@ -8,9 +8,12 @@ import {
   MessageSquare,
   Settings,
   User,
+  Sun,
+  Moon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 
 import {
   Sidebar,
@@ -106,6 +109,7 @@ const accountItems = [
 export function DashboardSidebar() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   return (
     <Sidebar collapsible="icon" className="border-r">
@@ -182,6 +186,21 @@ export function DashboardSidebar() {
 
       <SidebarFooter>
         <SidebarMenu>
+          {/* Theme Toggle */}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Toggle theme"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? (
+                <Sun className="size-4" />
+              ) : (
+                <Moon className="size-4" />
+              )}
+              <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

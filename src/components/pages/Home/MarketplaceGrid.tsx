@@ -20,7 +20,7 @@ export default function MarketplaceGrid() {
       icon: PiggyBank,
       label: "Financial Marketplace",
       comingSoon: false,
-      color: "from-blue-500 to-primary",
+      iconColor: "text-blue-600 dark:text-blue-400",
       bgColor:
         "from-blue-50/50 to-slate-50/50 dark:from-blue-950/20 dark:to-slate-800/50",
     },
@@ -28,85 +28,145 @@ export default function MarketplaceGrid() {
       icon: GraduationCap,
       label: "Non-Financial Marketplace",
       comingSoon: false,
-      color: "from-accent to-primary",
-      bgColor: "from-accent/5 to-card/50 dark:from-accent/10 dark:to-card/50",
+      iconColor: "text-emerald-600 dark:text-emerald-400",
+      bgColor:
+        "from-emerald-50/50 to-card/50 dark:from-emerald-950/20 dark:to-card/50",
     },
     {
       icon: Building2,
       label: "Communities Marketplace",
       comingSoon: false,
-      color: "from-primary to-accent",
+      iconColor: "text-purple-600 dark:text-purple-400",
       bgColor:
-        "from-primary/5 to-slate-50/50 dark:from-primary/10 dark:to-slate-800/50",
+        "from-purple-50/50 to-slate-50/50 dark:from-purple-950/20 dark:to-slate-800/50",
     },
     {
       icon: Calendar,
       label: "Calendar Marketplace",
       comingSoon: true,
-      color: "from-secondary to-primary",
+      iconColor: "text-orange-600 dark:text-orange-400",
       bgColor:
-        "from-secondary/5 to-card/50 dark:from-secondary/10 dark:to-card/50",
+        "from-orange-50/50 to-card/50 dark:from-orange-950/20 dark:to-card/50",
     },
     {
       icon: Lightbulb,
       label: "Courses Marketplace",
       comingSoon: true,
-      color: "from-accent to-secondary",
-      bgColor: "from-accent/5 to-card/50 dark:from-accent/10 dark:to-card/50",
+      iconColor: "text-yellow-600 dark:text-yellow-400",
+      bgColor:
+        "from-yellow-50/50 to-card/50 dark:from-yellow-950/20 dark:to-card/50",
     },
     {
       icon: TrendingUp,
       label: "Investment Marketplace",
       comingSoon: true,
-      color: "from-primary to-accent",
-      bgColor: "from-primary/5 to-card/50 dark:from-primary/10 dark:to-card/50",
+      iconColor: "text-green-600 dark:text-green-400",
+      bgColor:
+        "from-green-50/50 to-card/50 dark:from-green-950/20 dark:to-card/50",
     },
     {
       icon: Handshake,
       label: "Opportunities Marketplace",
       comingSoon: true,
-      color: "from-secondary to-accent",
+      iconColor: "text-indigo-600 dark:text-indigo-400",
       bgColor:
-        "from-secondary/5 to-card/50 dark:from-secondary/10 dark:to-card/50",
+        "from-indigo-50/50 to-card/50 dark:from-indigo-950/20 dark:to-card/50",
     },
     {
       icon: Shield,
       label: "Legal Services",
       comingSoon: true,
-      color: "from-slate-500 to-gray-600",
+      iconColor: "text-slate-600 dark:text-slate-400",
       bgColor:
         "from-slate-50/50 to-slate-50/50 dark:from-slate-950/20 dark:to-slate-800/50",
     },
   ];
 
   return (
-    <section>
-      {/* Marketplace Icons Grid */}
-      <div className="mt-20 container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8">
+    <section className="py-16 bg-gradient-to-b from-background via-muted/20 to-background">
+      <div className="container mx-auto px-4">
+        {/* Section Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 px-4 py-2 rounded-full border border-primary/20 mb-4">
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+            <Badge
+              variant="outline"
+              className="bg-transparent border-primary/30 text-primary font-medium text-xs"
+            >
+              EXPLORE MARKETPLACES
+            </Badge>
+          </div>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">
+            Discover Our Ecosystem
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">
+            Access comprehensive services across multiple marketplaces designed
+            to support your business journey
+          </p>
+        </div>
+
+        {/* Marketplace Icons Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
           {marketplaceItems.map((item, index) => (
             <Link
               key={index}
               href={item.comingSoon ? "#" : "/marketplace"}
-              className="flex flex-col items-center text-center group cursor-pointer"
+              className={`flex flex-col items-center text-center group ${
+                item.comingSoon
+                  ? "cursor-not-allowed opacity-75"
+                  : "cursor-pointer"
+              }`}
             >
-              <div className="relative">
-                <div className="w-20 h-20 bg-card rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl border border-border">
-                  <item.icon className="h-10 w-10 text-primary" />
+              <div className="relative mb-2 sm:mb-3">
+                {/* Icon Container */}
+                <div
+                  className={`
+                  w-20 h-20 sm:w-22 sm:h-22 md:w-24 md:h-24 lg:w-20 lg:h-20
+                  bg-gradient-to-br ${item.bgColor} 
+                  rounded-2xl flex items-center justify-center 
+                  group-hover:scale-110 transition-all duration-300 
+                  shadow-lg hover:shadow-xl border border-border/50
+                  ${!item.comingSoon ? "group-hover:shadow-primary/20" : ""}
+                `}
+                >
+                  <item.icon
+                    className={`
+                    h-9 w-9 sm:h-10 sm:w-10 md:h-12 md:w-12 lg:h-10 lg:w-10
+                    ${item.iconColor}
+                    ${!item.comingSoon ? "group-hover:scale-110" : ""}
+                    transition-transform duration-300
+                  `}
+                  />
                 </div>
+
+                {/* Coming Soon Badge */}
                 {item.comingSoon && (
-                  <Badge className="absolute -top-2 -right-2 text-xs bg-gradient-to-r from-secondary to-accent text-primary-foreground border-0 shadow-lg">
-                    Coming Soon
+                  <Badge className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 text-[10px] sm:text-xs bg-gradient-to-r from-secondary to-accent text-primary-foreground border-0 shadow-lg px-1.5 py-0.5 sm:px-2 sm:py-1">
+                    Soon
                   </Badge>
                 )}
               </div>
-              <div className="text-xs font-medium text-muted-foreground leading-tight group-hover:text-foreground transition-colors">
-                {item.label.split(" ").map((word, i) => (
-                  <div key={i}>{word}</div>
-                ))}
+
+              {/* Label */}
+              <div className="text-xs sm:text-sm md:text-sm lg:text-xs font-medium text-muted-foreground leading-tight group-hover:text-foreground transition-colors duration-300 max-w-full">
+                <div className="break-words text-center px-1">{item.label}</div>
               </div>
             </Link>
           ))}
+        </div>
+
+        {/* Call to Action */}
+        <div className="text-center mt-12">
+          <p className="text-sm text-muted-foreground mb-4">
+            Ready to explore our comprehensive marketplace ecosystem?
+          </p>
+          <Link
+            href="/marketplace"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            View All Marketplaces
+            <TrendingUp className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>
