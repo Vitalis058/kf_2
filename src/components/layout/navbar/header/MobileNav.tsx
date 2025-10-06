@@ -67,7 +67,7 @@ const exploreItems = [
     description:
       "Industry communities for networking, collaboration, and sharing best practices",
     icon: Users,
-    href: "/marketplace/community",
+    href: "/marketplace/communities",
   },
   {
     id: "course",

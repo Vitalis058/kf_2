@@ -25,7 +25,7 @@ import { CommunityHeader } from "./CommunityHeader";
 import { CommunityStats } from "./CommunityStats";
 import { JoinCommunityButton } from "./JoinCommunityButton";
 import { CommunityDiscussions } from "./CommunityDiscussions";
-import { PostCreationActions } from "./PostCreationActions";
+
 import { useCommunityDetails } from "../../hooks/useCommunityDetails";
 import {
   CommunityDetailsPageProps,
@@ -68,11 +68,6 @@ export const CommunityDetailsPage: React.FC<CommunityDetailsPageProps> = ({
   const handleReport = () => {
     // TODO: Implement report functionality
     console.log("Report community:", slug);
-  };
-
-  const handleCreatePost = (postType: PostType) => {
-    // TODO: Implement post creation
-    console.log("Create post:", postType, "in community:", slug);
   };
 
   if (communityLoading) {
@@ -256,13 +251,6 @@ export const CommunityDetailsPage: React.FC<CommunityDetailsPageProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Post Creation Actions */}
-            <PostCreationActions
-              communityId={community.id}
-              canPost={isMember}
-              onCreatePost={handleCreatePost}
-            />
-
             {/* Discussions */}
             <CommunityDiscussions
               communityId={community.id}

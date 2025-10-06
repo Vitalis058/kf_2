@@ -16,6 +16,7 @@ import {
   getCommunityDetailsBySlug,
   simulateJoinCommunity,
   simulateLeaveCommunity,
+  simulateCreatePost,
 } from "../mock-data/mockCommunityDetails";
 
 import {
@@ -207,42 +208,39 @@ export class MockCommunityDetailsService implements CommunityDetailsService {
         };
       }
 
-      // Simulate successful post creation
-      const newPost: Discussion = {
-        id: `post_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        title: post.title,
-        content: post.content,
-        excerpt: post.content.substring(0, 150) + "...",
-        author: {
-          id: "current_user",
-          name: "Current User",
-          username: "current_user",
-          role: "member",
-          joinedAt: new Date(),
-          postCount: 1,
-          replyCount: 0,
-          reputation: 100,
-          isOnline: true,
-          lastSeenAt: new Date(),
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        replyCount: 0,
-        likeCount: 0,
-        viewCount: 1,
-        type: post.type,
-        tags: post.tags || [],
-        isPinned: post.isPinned || false,
-        isLocked: false,
-        communityId,
-      };
+      if (post.type === "link" && !post.linkUrl?.trim()) {
+        return {
+          success: false,
+          message: "Link URL is required for link posts.",
+        };
+      }
 
-      console.log("New post created:", newPost);
+      if (
+        post.type === "poll" &&
+        (!post.pollOptions || post.pollOptions.length < 2)
+      ) {
+        return {
+          success: false,
+          message: "At least 2 poll options are required.",
+        };
+      }
+
+      // Use the simulate function
+      const result = simulateCreatePost(communityId, post);
+
+      if (!result.success) {
+        return {
+          success: false,
+          message: "Community not found or post creation failed.",
+        };
+      }
+
+      console.log("New post created:", result.post);
 
       return {
         success: true,
         message: "Post created successfully!",
-        post: newPost,
+        post: result.post,
       };
     } catch (_error) {
       return {

@@ -3,6 +3,8 @@ import {
   CommunityStats,
   CommunityPermissions,
   MembershipStatus,
+  CreatePostData,
+  Discussion,
 } from "../types/communityDetails";
 import { mockCommunities } from "./mockCommunities";
 import { getRecentDiscussions } from "./mockDiscussions";
@@ -211,4 +213,85 @@ export const getCommunityStatistics = () => {
         mockCommunityDetails.length
     ),
   };
+};
+// Helper function to simulate creating a post
+export const simulateCreatePost = (
+  communityId: string,
+  postData: CreatePostData
+): { success: boolean; post?: Discussion } => {
+  const community = getCommunityDetailsById(communityId);
+  if (!community) {
+    return { success: false };
+  }
+
+  // Create a new post/discussion
+  const newPost: Discussion = {
+    id: `post_${Date.now()}`,
+    title: postData.title,
+    content: postData.content,
+    excerpt:
+      postData.content.substring(0, 150) +
+      (postData.content.length > 150 ? "..." : ""),
+    author: {
+      id: "current_user",
+      name: "Current User",
+      username: "currentuser",
+      avatar: "/images/avatars/current-user.jpg",
+      role: "member",
+      joinedAt: new Date(),
+      postCount: 1,
+      replyCount: 0,
+      reputation: 10,
+      isOnline: true,
+      lastSeenAt: new Date(),
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    replyCount: 0,
+    likeCount: 0,
+    viewCount: 1,
+    type: postData.type,
+    tags: postData.tags || [],
+    isPinned: postData.isPinned || false,
+    isLocked: false,
+    communityId,
+  };
+
+  // Add type-specific content modifications
+  if (postData.type === "link" && postData.linkUrl) {
+    newPost.content += `\n\nLink: ${postData.linkUrl}`;
+  }
+
+  if (postData.type === "poll" && postData.pollOptions) {
+    newPost.content += `\n\nPoll Options:\n${postData.pollOptions
+      .map((opt, i) => `${i + 1}. ${opt}`)
+      .join("\n")}`;
+  }
+
+  if (postData.type === "event") {
+    if (postData.eventDate) {
+      newPost.content += `\n\nEvent Date: ${postData.eventDate.toLocaleDateString()}`;
+    }
+    if (postData.eventLocation) {
+      newPost.content += `\nLocation: ${postData.eventLocation}`;
+    }
+  }
+
+  // Update community stats (simulate)
+  const communityIndex = mockCommunityDetails.findIndex(
+    (c) => c.id === communityId
+  );
+  if (communityIndex !== -1) {
+    mockCommunityDetails[communityIndex].stats.totalPosts += 1;
+    mockCommunityDetails[communityIndex].stats.totalDiscussions += 1;
+    mockCommunityDetails[communityIndex].stats.lastActivityAt = new Date();
+
+    // Add to recent discussions
+    mockCommunityDetails[communityIndex].recentDiscussions.unshift(newPost);
+    // Keep only the 5 most recent
+    mockCommunityDetails[communityIndex].recentDiscussions =
+      mockCommunityDetails[communityIndex].recentDiscussions.slice(0, 5);
+  }
+
+  return { success: true, post: newPost };
 };

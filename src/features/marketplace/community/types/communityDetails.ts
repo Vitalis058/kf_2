@@ -129,6 +129,10 @@ export interface CreatePostData {
   type: PostType;
   tags?: string[];
   isPinned?: boolean;
+  linkUrl?: string; // For link posts
+  pollOptions?: string[]; // For poll posts
+  eventDate?: Date; // For event posts
+  eventLocation?: string; // For event posts
 }
 
 export interface CreatePostResponse {
