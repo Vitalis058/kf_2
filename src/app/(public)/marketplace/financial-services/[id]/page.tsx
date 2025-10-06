@@ -109,10 +109,10 @@ export default async function ServiceDetailPage({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/50 via-background to-blue-50/30 dark:from-blue-950/20 dark:via-background dark:to-blue-950/10">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10 dark:from-primary/10 dark:via-background dark:to-primary/5 mt-16">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900 text-white">
-        <div className="container mx-auto px-4 pt-32 pb-12">
+      <div className="bg-primary text-primary-foreground rounded-2xl">
+        <div className="container mx-auto px-4 py-10">
           {/* Back Button */}
           <div className="mb-6">
             <Button
@@ -146,7 +146,7 @@ export default async function ServiceDetailPage({
                       </Badge>
                     )}
                   </div>
-                  <p className="text-blue-100 text-lg mb-4">
+                  <p className="text-primary-foreground/80 text-lg mb-4">
                     {service.provider}
                   </p>
 
@@ -155,7 +155,7 @@ export default async function ServiceDetailPage({
                     <div className="flex items-center gap-2">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span className="font-medium">{service.rating}</span>
-                      <span className="text-blue-200">
+                      <span className="text-primary-foreground/70">
                         ({service.reviews} reviews)
                       </span>
                     </div>
@@ -172,7 +172,7 @@ export default async function ServiceDetailPage({
               </div>
 
               {/* Quick Description */}
-              <p className="text-blue-100 text-lg leading-relaxed max-w-3xl">
+              <p className="text-primary-foreground/80 text-lg leading-relaxed max-w-3xl">
                 {service.description}
               </p>
             </div>
@@ -182,7 +182,7 @@ export default async function ServiceDetailPage({
               <Card className="bg-background/95 dark:bg-background/90 backdrop-blur-sm border border-border/50 shadow-xl">
                 <CardContent className="p-6">
                   <div className="text-center mb-6">
-                    <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                    <div className="text-3xl font-bold text-primary mb-2">
                       {service.cost}
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -191,16 +191,10 @@ export default async function ServiceDetailPage({
                   </div>
 
                   <div className="space-y-3">
-                    <Button
-                      className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
-                      size="lg"
-                    >
+                    <Button className="w-full" size="lg">
                       Apply Now
                     </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/50"
-                    >
+                    <Button variant="outline" className="w-full">
                       Schedule Consultation
                     </Button>
                   </div>
@@ -253,27 +247,27 @@ export default async function ServiceDetailPage({
                 <Card className="border border-border/50 shadow-sm bg-background/50 dark:bg-background/30">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Award className="h-5 w-5 text-blue-600" />
+                      <Award className="h-5 w-5 text-primary" />
                       Key Features & Benefits
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
-                        <h4 className="font-semibold mb-3 text-blue-900 dark:text-blue-100">
+                        <h4 className="font-semibold mb-3 text-primary">
                           Service Features
                         </h4>
                         <div className="space-y-3">
                           {service.features.map((feature, index) => (
                             <div key={index} className="flex items-start gap-3">
-                              <CheckCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                              <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                               <span className="text-sm">{feature}</span>
                             </div>
                           ))}
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold mb-3 text-blue-900 dark:text-blue-100">
+                        <h4 className="font-semibold mb-3 text-primary">
                           Your Benefits
                         </h4>
                         <div className="space-y-3">
@@ -291,14 +285,12 @@ export default async function ServiceDetailPage({
 
                 {/* Statistics */}
                 <div className="grid md:grid-cols-3 gap-6">
-                  <Card className="text-center border border-border/50 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50">
+                  <Card className="text-center border border-border/50 shadow-sm bg-gradient-to-br from-primary/10 to-primary/20 dark:from-primary/20 dark:to-primary/10">
                     <CardContent className="p-6">
-                      <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                      <div className="text-3xl font-bold text-primary mb-2">
                         94%
                       </div>
-                      <p className="text-sm text-blue-700 dark:text-blue-300">
-                        Success Rate
-                      </p>
+                      <p className="text-sm text-primary/80">Success Rate</p>
                     </CardContent>
                   </Card>
                   <Card className="text-center border border-border/50 shadow-sm bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/50 dark:to-green-900/50">
@@ -333,8 +325,8 @@ export default async function ServiceDetailPage({
                     >
                       <CardContent className="p-6">
                         <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <CheckCircle className="h-5 w-5 text-blue-600" />
+                          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <CheckCircle className="h-5 w-5 text-primary" />
                           </div>
                           <div>
                             <h4 className="font-semibold mb-2">{feature}</h4>
@@ -355,7 +347,7 @@ export default async function ServiceDetailPage({
                   <Card className="border-0 shadow-sm">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Users className="h-5 w-5 text-blue-600" />
+                        <Users className="h-5 w-5 text-primary" />
                         Eligibility Criteria
                       </CardTitle>
                       <CardDescription>
@@ -367,14 +359,16 @@ export default async function ServiceDetailPage({
                         {service.eligibility.map((criteria, index) => (
                           <div
                             key={index}
-                            className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg"
+                            className="flex items-start gap-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg"
                           >
-                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                               <span className="text-white text-xs font-bold">
                                 {index + 1}
                               </span>
                             </div>
-                            <span className="text-sm">{criteria}</span>
+                            <span className="text-sm text-foreground">
+                              {criteria}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -384,7 +378,7 @@ export default async function ServiceDetailPage({
                   <Card className="border-0 shadow-sm">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <FileText className="h-5 w-5 text-blue-600" />
+                        <FileText className="h-5 w-5 text-primary" />
                         Required Documents
                       </CardTitle>
                       <CardDescription>
@@ -396,10 +390,12 @@ export default async function ServiceDetailPage({
                         {service.requirements.map((requirement, index) => (
                           <div
                             key={index}
-                            className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                            className="flex items-start gap-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg"
                           >
-                            <FileText className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
-                            <span className="text-sm">{requirement}</span>
+                            <FileText className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-sm text-foreground">
+                              {requirement}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -412,7 +408,7 @@ export default async function ServiceDetailPage({
                 <Card className="border-0 shadow-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Calendar className="h-5 w-5 text-blue-600" />
+                      <Calendar className="h-5 w-5 text-primary" />
                       Application Process
                     </CardTitle>
                     <CardDescription>
@@ -449,7 +445,7 @@ export default async function ServiceDetailPage({
                         },
                       ].map((item, index) => (
                         <div key={index} className="flex items-start gap-4">
-                          <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                          <div className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold flex-shrink-0">
                             {item.step}
                           </div>
                           <div className="flex-1">
@@ -473,36 +469,33 @@ export default async function ServiceDetailPage({
             <Card className="border border-border/50 shadow-sm sticky top-8 bg-background/50 dark:bg-background/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Phone className="h-5 w-5 text-blue-600" />
+                  <Phone className="h-5 w-5 text-primary" />
                   Contact Information
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                  <Phone className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium">
+                <div className="flex items-center gap-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg">
+                  <Phone className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">
                     {service.contact.phone}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                  <Mail className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium">
+                <div className="flex items-center gap-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg">
+                  <Mail className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">
                     {service.contact.email}
                   </span>
                 </div>
-                <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                  <MapPin className="h-4 w-4 text-blue-600 mt-0.5" />
-                  <span className="text-sm font-medium">
+                <div className="flex items-start gap-3 p-3 bg-primary/10 dark:bg-primary/20 rounded-lg">
+                  <MapPin className="h-4 w-4 text-primary mt-0.5" />
+                  <span className="text-sm font-medium text-foreground">
                     {service.contact.address}
                   </span>
                 </div>
 
                 <Separator />
 
-                <Button
-                  variant="outline"
-                  className="w-full border-blue-200 text-blue-700 hover:bg-blue-50"
-                >
+                <Button variant="outline" className="w-full">
                   Download Brochure
                 </Button>
               </CardContent>

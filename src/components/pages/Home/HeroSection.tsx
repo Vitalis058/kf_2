@@ -23,7 +23,15 @@ export default function HeroSection() {
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-none">
             Empowering UAE
-            <span className="block text-primary">Entrepreneurs</span>
+            <span
+              className="block text-primary"
+              style={{
+                textShadow:
+                  "2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 2px 0 0 white, 0 -2px 0 white, -2px 0 0 white",
+              }}
+            >
+              Entrepreneurs
+            </span>
           </h1>
           <p className="text-lg md:text-xl lg:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
             Your gateway to funding, training, and business support for UAE

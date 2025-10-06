@@ -217,6 +217,7 @@ export const FinancialMarketplace: React.FC = () => {
                       service={service}
                       viewMode={viewMode}
                       onViewDetails={handleViewDetails}
+                      serviceType="financial"
                     />
                   ))}
                 </div>

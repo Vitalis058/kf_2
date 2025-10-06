@@ -20,65 +20,60 @@ export default function MarketplaceGrid() {
       icon: PiggyBank,
       label: "Financial Marketplace",
       comingSoon: false,
-      iconColor: "text-blue-600 dark:text-blue-400",
+      iconColor: "text-primary",
       bgColor:
-        "from-blue-50/50 to-slate-50/50 dark:from-blue-950/20 dark:to-slate-800/50",
+        "from-primary/10 to-card/50 dark:from-primary/20 dark:to-card/50",
     },
     {
       icon: GraduationCap,
       label: "Non-Financial Marketplace",
       comingSoon: false,
-      iconColor: "text-emerald-600 dark:text-emerald-400",
+      iconColor: "text-primary",
       bgColor:
-        "from-emerald-50/50 to-card/50 dark:from-emerald-950/20 dark:to-card/50",
+        "from-primary/10 to-card/50 dark:from-primary/20 dark:to-card/50",
     },
     {
       icon: Building2,
       label: "Communities Marketplace",
       comingSoon: false,
-      iconColor: "text-purple-600 dark:text-purple-400",
+      iconColor: "text-primary",
       bgColor:
-        "from-purple-50/50 to-slate-50/50 dark:from-purple-950/20 dark:to-slate-800/50",
+        "from-primary/10 to-card/50 dark:from-primary/20 dark:to-card/50",
     },
     {
       icon: Calendar,
       label: "Calendar Marketplace",
       comingSoon: true,
-      iconColor: "text-orange-600 dark:text-orange-400",
-      bgColor:
-        "from-orange-50/50 to-card/50 dark:from-orange-950/20 dark:to-card/50",
+      iconColor: "text-primary/60",
+      bgColor: "from-primary/5 to-card/50 dark:from-primary/10 dark:to-card/50",
     },
     {
       icon: Lightbulb,
       label: "Courses Marketplace",
       comingSoon: true,
-      iconColor: "text-yellow-600 dark:text-yellow-400",
-      bgColor:
-        "from-yellow-50/50 to-card/50 dark:from-yellow-950/20 dark:to-card/50",
+      iconColor: "text-primary/60",
+      bgColor: "from-primary/5 to-card/50 dark:from-primary/10 dark:to-card/50",
     },
     {
       icon: TrendingUp,
       label: "Investment Marketplace",
       comingSoon: true,
-      iconColor: "text-green-600 dark:text-green-400",
-      bgColor:
-        "from-green-50/50 to-card/50 dark:from-green-950/20 dark:to-card/50",
+      iconColor: "text-primary/60",
+      bgColor: "from-primary/5 to-card/50 dark:from-primary/10 dark:to-card/50",
     },
     {
       icon: Handshake,
       label: "Opportunities Marketplace",
       comingSoon: true,
-      iconColor: "text-indigo-600 dark:text-indigo-400",
-      bgColor:
-        "from-indigo-50/50 to-card/50 dark:from-indigo-950/20 dark:to-card/50",
+      iconColor: "text-primary/60",
+      bgColor: "from-primary/5 to-card/50 dark:from-primary/10 dark:to-card/50",
     },
     {
       icon: Shield,
       label: "Legal Services",
       comingSoon: true,
-      iconColor: "text-slate-600 dark:text-slate-400",
-      bgColor:
-        "from-slate-50/50 to-slate-50/50 dark:from-slate-950/20 dark:to-slate-800/50",
+      iconColor: "text-primary/60",
+      bgColor: "from-primary/5 to-card/50 dark:from-primary/10 dark:to-card/50",
     },
   ];
 
@@ -87,7 +82,7 @@ export default function MarketplaceGrid() {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 px-4 py-2 rounded-full border border-primary/20 mb-4">
+          <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full border border-primary/20 mb-4">
             <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
             <Badge
               variant="outline"
@@ -141,7 +136,7 @@ export default function MarketplaceGrid() {
 
                 {/* Coming Soon Badge */}
                 {item.comingSoon && (
-                  <Badge className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 text-[10px] sm:text-xs bg-gradient-to-r from-secondary to-accent text-primary-foreground border-0 shadow-lg px-1.5 py-0.5 sm:px-2 sm:py-1">
+                  <Badge className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 text-[10px] sm:text-xs bg-primary text-primary-foreground border-0 shadow-lg px-1.5 py-0.5 sm:px-2 sm:py-1">
                     Soon
                   </Badge>
                 )}
@@ -162,7 +157,7 @@ export default function MarketplaceGrid() {
           </p>
           <Link
             href="/marketplace/financial-services"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
             View All Marketplaces
             <TrendingUp className="h-4 w-4" />

@@ -23,6 +23,7 @@ interface ServiceCardProps {
   service: FinancialService;
   viewMode: "grid" | "list";
   onViewDetails?: (serviceId: string) => void;
+  serviceType?: "financial" | "non-financial";
 }
 
 const getCategoryIcon = (category: string) => {
@@ -66,9 +67,11 @@ const getCategoryColor = (category: string) => {
 export const ServiceCard: React.FC<ServiceCardProps> = ({
   service,
   viewMode,
+  serviceType = "financial",
 }) => {
   const categoryIcon = getCategoryIcon(service.category);
   const categoryColor = getCategoryColor(service.category);
+  const detailsLink = `/marketplace/${serviceType}-services/${service.id}`;
 
   if (viewMode === "list") {
     return (
@@ -144,7 +147,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                 </div>
 
                 <Button size="sm" className="ml-4" asChild>
-                  <Link href={`/marketplace/financial-services/${service.id}`}>
+                  <Link href={detailsLink}>
                     View Details
                     <ArrowRight className="h-4 w-4 ml-1" />
                   </Link>
@@ -229,7 +232,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         {/* Action Button */}
         <Button className="w-full mt-auto" asChild>
           <Link
-            href={`/marketplace/financial-services/${service.id}`}
+            href={detailsLink}
             className="flex items-center justify-center gap-1"
           >
             View Details
