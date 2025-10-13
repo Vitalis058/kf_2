@@ -249,15 +249,15 @@ const ProfileCompletionCard: React.FC<{
   const nextStep = completionSteps.find((step) => !step.completed);
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
+    <Card className="hover:shadow-md transition-all duration-200">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center space-x-3">
-            <div className="p-3 bg-gradient-to-br from-primary to-accent rounded-xl shadow-lg">
-              <Users className="h-6 w-6 text-primary-foreground" />
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Users className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <span className="text-foreground text-xl">
+              <span className="text-foreground text-lg">
                 Profile Completion
               </span>
               <p className="text-sm text-muted-foreground font-normal">
@@ -266,7 +266,7 @@ const ProfileCompletionCard: React.FC<{
             </div>
           </CardTitle>
           <div className="text-right">
-            <div className="text-3xl font-bold text-primary mb-1">
+            <div className="text-2xl font-bold text-primary mb-1">
               {completionPercentage}%
             </div>
             <Badge
@@ -308,18 +308,18 @@ const ProfileCompletionCard: React.FC<{
 
         {/* Next Step Highlight */}
         {nextStep && (
-          <div className="bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+          <div className="bg-muted/50 border border-border rounded-lg p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                 <span className="text-xs font-bold text-primary">
                   {nextStep.id}
                 </span>
               </div>
               <div>
-                <h4 className="font-semibold text-foreground">
+                <h4 className="font-semibold text-foreground text-sm">
                   Next: {nextStep.title}
                 </h4>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {nextStep.description}
                 </p>
               </div>
@@ -378,20 +378,17 @@ const ProfileCompletionCard: React.FC<{
         <div className="pt-4 border-t border-border">
           <Button
             onClick={onCompleteProfile}
-            className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+            className="w-full"
           >
-            <span className="flex items-center justify-center gap-2">
-              {completionPercentage >= 80
-                ? "Review & Update Profile"
-                : "Continue Setup"}
-              <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-            </span>
+            {completionPercentage >= 80
+              ? "Review & Update Profile"
+              : "Continue Setup"}
+            <ChevronRight className="h-4 w-4 ml-2" />
           </Button>
 
           {completionPercentage < 100 && (
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              Complete your profile to unlock all features and improve your
-              application success rate
+            <p className="text-xs text-muted-foreground text-center mt-3">
+              Complete your profile to unlock all features
             </p>
           )}
         </div>

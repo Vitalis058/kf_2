@@ -56,14 +56,10 @@ const monthlyData = [
 ];
 
 const serviceCategoryData = [
-  { name: "Financial Services", value: 45, color: "hsl(var(--primary))" },
-  { name: "Business Development", value: 30, color: "hsl(var(--secondary))" },
-  { name: "Training Programs", value: 15, color: "hsl(var(--accent))" },
-  {
-    name: "Advisory Services",
-    value: 10,
-    color: "hsl(var(--muted-foreground))",
-  },
+  { name: "Financial Services", value: 45, color: "hsl(var(--chart-1))" },
+  { name: "Business Development", value: 30, color: "hsl(var(--chart-2))" },
+  { name: "Training Programs", value: 15, color: "hsl(var(--chart-3))" },
+  { name: "Advisory Services", value: 10, color: "hsl(var(--chart-4))" },
 ];
 
 const performanceData = [
@@ -181,17 +177,17 @@ const InsightsPage: React.FC = () => {
                           type="monotone"
                           dataKey="applications"
                           stackId="1"
-                          stroke="hsl(var(--primary))"
-                          fill="hsl(var(--primary))"
-                          fillOpacity={0.3}
+                          stroke="hsl(var(--chart-1))"
+                          fill="hsl(var(--chart-1))"
+                          fillOpacity={0.4}
                         />
                         <Area
                           type="monotone"
                           dataKey="approvals"
                           stackId="2"
-                          stroke="hsl(var(--secondary))"
-                          fill="hsl(var(--secondary))"
-                          fillOpacity={0.3}
+                          stroke="hsl(var(--chart-2))"
+                          fill="hsl(var(--chart-2))"
+                          fillOpacity={0.4}
                         />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -259,13 +255,15 @@ const InsightsPage: React.FC = () => {
                       <Legend />
                       <Bar
                         dataKey="applications"
-                        fill="hsl(var(--primary))"
+                        fill="hsl(var(--chart-1))"
                         name="Applications"
+                        radius={[4, 4, 0, 0]}
                       />
                       <Bar
                         dataKey="approvals"
-                        fill="hsl(var(--secondary))"
+                        fill="hsl(var(--chart-2))"
                         name="Approvals"
+                        radius={[4, 4, 0, 0]}
                       />
                     </BarChart>
                   </ResponsiveContainer>
@@ -302,12 +300,19 @@ const InsightsPage: React.FC = () => {
                       <Line
                         type="monotone"
                         dataKey="revenue"
-                        stroke="hsl(var(--primary))"
+                        stroke="hsl(var(--chart-1))"
                         strokeWidth={3}
                         dot={{
-                          fill: "hsl(var(--primary))",
+                          fill: "hsl(var(--chart-1))",
+                          stroke: "white",
                           strokeWidth: 2,
                           r: 6,
+                        }}
+                        activeDot={{
+                          fill: "hsl(var(--chart-1))",
+                          stroke: "white",
+                          strokeWidth: 2,
+                          r: 8,
                         }}
                       />
                     </LineChart>
@@ -339,13 +344,15 @@ const InsightsPage: React.FC = () => {
                       <Legend />
                       <Bar
                         dataKey="applications"
-                        fill="hsl(var(--primary))"
+                        fill="hsl(var(--chart-3))"
                         name="Applications"
+                        radius={[0, 4, 4, 0]}
                       />
                       <Bar
                         dataKey="revenue"
-                        fill="hsl(var(--secondary))"
+                        fill="hsl(var(--chart-5))"
                         name="Revenue (AED)"
+                        radius={[0, 4, 4, 0]}
                       />
                     </BarChart>
                   </ResponsiveContainer>
